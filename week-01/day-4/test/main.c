@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 /*
 Create a program which can tell how to pay an exact amount of money
@@ -24,8 +23,8 @@ Take care of the rounding (when giving back 5 coins):
 
 int main()
 {
-    int amount_of_money = 57547;
-        int rounded_amount = (amount_of_money%10);
+    int amount_of_money = 57549;
+    int rounded_amount = (amount_of_money%10);
     //printf("%d", rounded_amount);
     {
     switch (rounded_amount) {
@@ -48,21 +47,5 @@ int main()
         printf("%d", amount_of_money);
 
     }
-
-   /* do {
-        rest20th = amount_of_money%20000;
-        printf("You can pay with %d * 20 000\n", amount_of_money/20000);
-
-    }
-
-    if (amount_of_money%20000==0) {
-        printf("you will pay %d * 20 000", amount_of_money%20000);
-    } else {
-        amount_of_money = amount_of_money%20000;
-        if (amount_of_money%10000==0) {
-            printf("you will pay %d * 20 000, %d * 10 000", amount_of_money/20000, (amount_of_money-(amount_of_money/20000))%10000);
-        } else {printf("Yoo need more");}
-    }
-*/
     return 0;
 }
