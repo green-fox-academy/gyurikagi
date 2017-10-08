@@ -1,51 +1,25 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-/*
-Create a program which can tell how to pay an exact amount of money
-for example 45670 Ft, is the amount (store this as an integer)
-and the output should be:
-2-20000Ft
-1-5000Ft
-1-500Ft
-1-100Ft
-1-50Ft
-1-20Ft
-*/
-
-/*
-Take care of the rounding (when giving back 5 coins):
-1, 2 - 0 down
-3, 4 - 5 up
-6, 7 - 5 down
-8, 9 - 0 up
-*/
-
-int main()
-{
-    int amount_of_money = 57549;
-    int rounded_amount = (amount_of_money%10);
-    //printf("%d", rounded_amount);
+int main() {
+	// Write a program that prints the numbers from 1 to 100.
+	// But for multiples of three print "Fizz" instead of the number
+	// and for the multiples of five print "Buzz".
+	// For numbers which are multiples of both three and five print "FizzBuzz".
+	for (int i=1; i<101; i++)
     {
-    switch (rounded_amount) {
-    case 1 : amount_of_money= amount_of_money-1;
-        break;
-    case 2 : amount_of_money = amount_of_money - 2;
-        break;
-    case 3 : amount_of_money = amount_of_money + 2;
-        break;
-    case 4: amount_of_money = amount_of_money + 1;
-        break;
-    case 6 : amount_of_money =  amount_of_money - 1;
-            break;
-    case 7 : amount_of_money = amount_of_money - 2;
-        break;
-    case 8 : amount_of_money =  amount_of_money +2;
-        break;
-    case 9 : amount_of_money =  amount_of_money + 1;
-        break;}
-        printf("%d", amount_of_money);
-
-    }
+        if ((i%3==0)&&(i%5==0))
+        {
+            printf("FizzBuzz\n");
+        }
+            else if (i%5==0)
+            {
+                printf("Buzz\n");
+            }
+            else if (i%3==0)
+            {
+                printf("Fizz\n");
+            }
+            else { printf("%d\n", i);}
+        }
     return 0;
 }

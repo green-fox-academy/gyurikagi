@@ -9,16 +9,20 @@
 
 int main()
 {
-    int a = 179;
+    int a = 180;
     int b = 371;
-    if (!(a%2)) {
-        for (a; a < b+1; a += 2)
+    int counter = 0;
+    if (a%2!=0) {
+        for (int a1 = a; a1 < b+1; a1 += 2)
         {
-            printf("%d\n", a+1);
-        }
-    } else { for (a+1; a < b + 1; a += 2) {
-        printf("%d\n", a);}
-         }
+            printf(" páros %d\n", a1);
+            counter ++;
 
+        }
+    } else { for (int a2 =a+1; a2 < b + 1; a2 += 2) {
+        printf("%d\n", a2);
+        counter ++;}
+         }
+    printf("this is %d odd number between %d and %d", counter, a, b);
 	return 0;
 }
