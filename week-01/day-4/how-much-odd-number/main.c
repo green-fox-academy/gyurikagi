@@ -9,13 +9,13 @@
 
 int main()
 {
-    int a = 180;
+    int a = 179;
     int b = 371;
     int counter = 0;
     if (a%2!=0) {
         for (int a1 = a; a1 < b+1; a1 += 2)
         {
-            printf(" páros %d\n", a1);
+            printf("%d\n", a1);
             counter ++;
 
         }
