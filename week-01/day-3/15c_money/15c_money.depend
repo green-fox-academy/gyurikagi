@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1507498893 source:d:\greenfox\greenfox\gyurikagi\week-01\day-3\15c_money\main.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+

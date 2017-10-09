@@ -47,6 +47,7 @@ int main()
         break;}
         printf("%d", amount_of_money);
 
+
     }
 
    /* do {
