@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1507561367 source:d:\greenfox\greenfox\gyurikagi\week -02\day-1\greet\main.c
+	<stdio.h>
+	<stdlib.h>
+	"variables.h"
+
+1507560455 d:\greenfox\greenfox\gyurikagi\week -02\day-1\greet\variables.h
+
