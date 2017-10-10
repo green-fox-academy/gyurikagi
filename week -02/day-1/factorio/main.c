@@ -23,16 +23,16 @@ int factorial_with_recursion(int i) {
 
 int factorial_without_recursion (int i)
 {
-    if (int i < 0)
+    if (i < 0)
         printf("Error! Factorial of a negative number doesn't exist.");
 
     else
     {
-        for(int j=1; j<=i; ++j)
+        for(int j=1; j<=i; j++)
         {
             factorial *= j;              // factorial = factorial*i;
         }
-        printf("Factorial of %d = %llu", n, factorial);
+        printf("Factorial of %d = %llu", j, factorial);
     }
     return 0;
 }

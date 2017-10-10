@@ -1,0 +1,5 @@
+#Do not upload Codeblocks
+*.cbp
+bin/
+obj/
+*.depend
