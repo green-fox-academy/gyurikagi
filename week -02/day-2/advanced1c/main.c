@@ -4,7 +4,8 @@ int main()
 {
     int arr[50];
     int lengt_of_array = 0;
-    printf("Give me the size of array: ");
+    int deleted_element = 0;
+    printf("Give me the size of array: \n");
     scanf("%d", &lengt_of_array);
 
     for (int j = 0; j <lengt_of_array; j++) {
@@ -12,6 +13,24 @@ int main()
     }
     for (int i = 0; i < lengt_of_array; i++) {
         printf("%d,\t", arr[i]);
+    }
+    printf("Delete the next element:");
+    scanf("%d", &deleted_element);
+    if (deleted_element > lengt_of_array) {
+        printf("It is bigger than the length of array");
+    }
+    else
+
+        { for (int a = 0; a < deleted_element-1; a++) {
+        arr[a] = arr [a];
+    }
+    for (int a = deleted_element; a < lengt_of_array; a++) {
+        arr [a-1] = arr [a];
+    }
+    //print the new array
+     for (int c = 0; c < lengt_of_array-1; c++) {
+        printf("%d,\t", arr[c]);
+    }
     }
 
 
