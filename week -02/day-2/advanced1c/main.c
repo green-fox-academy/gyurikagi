@@ -1,21 +1,25 @@
 #include <stdio.h>
 
 int main()
-{
+{   // initializing variables
     int arr[50];
     int lengt_of_array = 0;
     int deleted_element = 0;
+    // ask for input
     printf("Give me the size of array: \n");
     scanf("%d", &lengt_of_array);
-
+    // creating original array
     for (int j = 0; j <lengt_of_array; j++) {
         arr [j] = rand();
     }
+    // print the original array
     for (int i = 0; i < lengt_of_array; i++) {
         printf("%d,\t", arr[i]);
     }
+    //ask which element should be deleted
     printf("Delete the next element:");
     scanf("%d", &deleted_element);
+
     if (deleted_element > lengt_of_array) {
         printf("It is bigger than the length of array");
     }
@@ -28,7 +32,7 @@ int main()
         arr [a-1] = arr [a];
     }
     //print the new array
-     for (int c = 0; c < lengt_of_array-1; c++) {
+       for (int c = 0; c < lengt_of_array-1; c++) {
         printf("%d,\t", arr[c]);
     }
     }

@@ -12,27 +12,36 @@ int factorial_with_recursion();
 int main()
 {
 
+    factorial_without_recursion(NUM1);
+    factorial_with_recursion(NUM1);
+    printf("Factorial of %d = %d with recursion\n", NUM1, factorial_with_recursion(NUM1));
+    factorial_without_recursion(NUM2);
+    factorial_with_recursion(NUM2);
+    printf("Factorial of %d = %d with recursion\n", NUM2, factorial_with_recursion(NUM2));
     return 0;
 }
-int factorial_with_recursion(int i) {
-   if(i <= 1) {
-      return 1;
-   }
-   return i * factorial(i - 1);
+int factorial_with_recursion(int num)
+{   int result = 0;
+    if(num >= 1) {
+       result = num * (factorial_with_recursion(num - 1));
+       return result;
+    } else {return 1;}
+}
 
 
-int factorial_without_recursion (int i)
+int factorial_without_recursion (int num)
 {
-    if (i < 0)
-        printf("Error! Factorial of a negative number doesn't exist.");
-
-    else
-    {
-        for(int j=1; j<=i; j++)
+    int result = 1;   // show error if the user enters a negative integer
+    if (num > 0)
         {
-            factorial *= j;              // factorial = factorial*i;
+            for (int c = 1; c <= num; c++ ) {
+                result = result * c;
+            }
+            printf("Factorial of %d = %d without recursion\n", num, result);
         }
-        printf("Factorial of %d = %llu", j, factorial);
-    }
-    return 0;
+       else {
+        printf("Error! Factorial of a negative number doesn't exist.");
+       }
+    return result;
 }
+
