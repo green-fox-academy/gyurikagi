@@ -47,7 +47,7 @@ int can_they_make_a_cake()
     int cost_of_cake = milk + chocolate + flour + egg + sugar + salt + oven_shape + cream;
 
     if (total_money()>= cost_of_cake) {
-        printf("You can make a cake and total remainder is:  %d $. Everybody pay %d $", total_money()-cost_of_cake, cost_of_cake/3);
+        printf("You can make a cake and total remainder is:  %d $. Everybody pay %d $\n", total_money()-cost_of_cake, cost_of_cake/3);
     } else {printf("You need more money: %d", cost_of_cake-total_money());
     }
     return 0;
