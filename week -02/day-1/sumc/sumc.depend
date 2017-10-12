@@ -1,8 +1,0 @@
-# depslib dependency file v1.0
-1507557821 source:d:\greenfox\greenfox\gyurikagi\week -02\day-1\sumc\main.c
-	<stdio.h>
-	<stdlib.h>
-	"parameters.h"
-
-1507557044 d:\greenfox\greenfox\gyurikagi\week -02\day-1\sumc\parameters.h
-
