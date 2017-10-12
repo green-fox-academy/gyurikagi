@@ -17,7 +17,7 @@ int main()
             break;
          }
     }
-    printf("This is a palindrome\n");
+    printf("\n");
 
 
 
