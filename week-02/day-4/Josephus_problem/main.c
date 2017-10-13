@@ -8,7 +8,6 @@ int main()
     printf("Give me the number of people:\n");
     scanf("%d", &number_of_solders);
     int i = 0;
-    //int index = 0;
 
     do {
         pow(2, i);
