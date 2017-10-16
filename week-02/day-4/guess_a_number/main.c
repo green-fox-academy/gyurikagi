@@ -20,11 +20,11 @@ int main()
         counter++;
         scanf("%d", &guess);
     }
-    else {printf("Congratulation! You won!");
+    else if {printf("Congratulation! You won!");
     break;}
-    }
+
     //answer, when you lost
-    if (counter == 5) {printf("You lost");}
+    else(counter == 5) {printf("You lost");}
 
     return 0;
 }

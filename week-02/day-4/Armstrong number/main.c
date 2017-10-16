@@ -30,7 +30,8 @@ int main()
     // compare your number with "armstrong" number
         if (number == armstrong) {
             printf("Your number is an Armstrong number");
-        } else printf("Your number is not an Armstrong number");
+        } else
+            printf("Your number is not an Armstrong number");
 
     return 0;
 }
