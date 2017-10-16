@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-void printf_numbers(int from, int to)
+void printf_numbers(double from, double to)
 {
 	for (int i = from; i < to; i++)
 		printf("%d,", i);
