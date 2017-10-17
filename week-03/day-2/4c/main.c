@@ -9,7 +9,7 @@ int main()
 	char str[5];
 	strcpy(str, "3.14");
     val = atof(str);
-    printf("%s\n", (int)str);
+    printf("%s\n", str);
     printf("%f", val);
 
 	//TODO: print out the value of pi, first as a string, then a float value.
