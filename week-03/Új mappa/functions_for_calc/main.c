@@ -4,16 +4,21 @@
 
 int main()
 {
-    int number1 = 0;
-    int number2 = 0;
+    float number1 = 0.0f;
+    float number2 = 0.0f;
     int op = 0;
 
     start_screen();
-   // give_numbers_and_operator (number1, op, number2);
-    scanf("%d", &number1);
-    scanf("%d", &op);
-    scanf("%d", &number2);
-    printf("%d, %d, %d", number1, op, number2);
+    //give_numbers_and_operator (number1, op, number2);
+
+    scanf("%f", &number1);
+    scanf("%c", &op);
+    scanf("%f", &number2);
+    printf("number 1 is %f, operator %c, num2 is %f", number1, op, number2);
+
+    //if op == '+'
+
+
 
     // adatbekérés
 

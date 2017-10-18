@@ -25,18 +25,26 @@ Commands:\n\
 This program only work with two numbers\n");
 }
 
-int give_numbers_and_operator (int a, int b, int c)
+/*
+int give_numbers_and_operator ()
 {
-    int first_number (int a )
-    {scanf("%d", &a);
-        return a;}
-    int operator_needed ( int b){
-        scanf("%d", &b);
-        return b;}
-    int second_number (int c) {
-        scanf("%d", &c);
-    return c; }
+    int index = 0;
+    char character = getchar();
+    while (character != 32) {
+        string[index] = character;
+		index++;
+		character = getchar();
+    }
+    string[index] = '\0';
 }
+
+    char *pch;
+    pch = strtok(string, " ");
+    while (pch != NULL)
+    {
+        printf("%s\n", pch);
+        pch = strtok(NULL, " ");
+    } */
 
 //----------------------------------------------//
 
