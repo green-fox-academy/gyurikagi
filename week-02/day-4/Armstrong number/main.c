@@ -7,7 +7,6 @@ int main()
     int number  = 0;
     int index = 0;
     int helper = 0;
-    int helper2 = 0;
     double armstrong = 0;
     // give me a number
     printf("Give me a number!\n");
@@ -23,9 +22,8 @@ int main()
 
     for (int j = 0; j < index; ++j)
     {
-        helper = (number/pow(10, j));
-        helper2 = helper%10;
-        armstrong = armstrong + pow(helper2, index);
+        helper = (( int) (number / pow (10, j) ) %10);
+        armstrong = armstrong + pow (helper, index);
     }
     // compare your number with "armstrong" number
         if (number == armstrong) {
@@ -35,3 +33,4 @@ int main()
 
     return 0;
 }
+
