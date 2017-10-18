@@ -31,9 +31,10 @@ void transform (char str[], int original_base, int new_base)
 
    char buffer[100];
    int num_to_convert = strtol(str, NULL, original_base);
+   int converted_num = itoa(num_to_convert, buffer, new_base);
 
    printf("The original input %s of base %d converted to %d form is %s.\n", str, original_base, new_base,
-          itoa(num_to_convert, buffer, new_base));
+          converted_num);
 
 
 }
