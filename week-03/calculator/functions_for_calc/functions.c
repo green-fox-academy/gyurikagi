@@ -29,7 +29,7 @@ Commands:\n\
  ==================================== \n\
 This program only work with two numbers\n");
 }
-//-------------------------------------//
+
 
 void addiction (double a, double b){
   printf("%f\n", a + b);
@@ -49,7 +49,7 @@ void addiction (double a, double b){
 
 
  void division (double a, double b){
-    printf("div is %f\n", a / b );
+    printf("%f\n", a / b );
     }
 
 void squaring (double a, double b) {
@@ -73,4 +73,3 @@ void clear_screen ()
     system ("cls");
 }
 
-//---------------------------------------------//
