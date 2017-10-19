@@ -34,18 +34,31 @@ This program only work with two numbers\n");
 void addiction (double a, double b){
   printf("%f\n", a + b);
 }
- //-------------------------------------//
+
 
  void substraction (double a, double b){
   printf("%f\n", a - b);
  }
 
- //-------------------------------------//
+
 
 
  void multiplication (double a, double b){
      printf("%f\n", a * b);
  }
+
+
+ void division (double a, double b){
+    printf("div is %f\n", a / b );
+    }
+
+void squaring (double a, double b) {
+    printf("%f\n", pow(a,b));
+    }
+
+void square_root (double a, double b) {
+    printf("%f\n", pow(a,(1/b)));
+    }
 
 void clear_screen ()
 {

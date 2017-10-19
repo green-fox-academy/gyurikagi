@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "functions.h"
 
 int main()
@@ -34,6 +35,11 @@ int main()
     addiction(num1, num2);
     substraction (num1, num2);
     multiplication (num1, num2);
+    division (num1, num2);
+    squaring (num1, num2);
+    square_root (num1, num2);
+    //printf("Value 8.0 ^ 3 = %lf\n", fpow(num1, num2));;
+
 
 
 
