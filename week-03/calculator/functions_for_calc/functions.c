@@ -1,3 +1,8 @@
+#include <math.h>
+#include <stdio.h>
+
+
+
 void start_screen ()
 {
  printf("\t \CLI Calculator \n \
@@ -24,29 +29,23 @@ Commands:\n\
  ==================================== \n\
 This program only work with two numbers\n");
 }
+//-------------------------------------//
 
-/*
-int give_numbers_and_operator ()
-{
-    int index = 0;
-    char character = getchar();
-    while (character != 32) {
-        string[index] = character;
-		index++;
-		character = getchar();
-    }
-    string[index] = '\0';
+void addiction (double a, double b){
+  printf("%f\n", a + b);
 }
+ //-------------------------------------//
 
-    char *pch;
-    pch = strtok(string, " ");
-    while (pch != NULL)
-    {
-        printf("%s\n", pch);
-        pch = strtok(NULL, " ");
-    } */
+ void substraction (double a, double b){
+  printf("%f\n", a - b);
+ }
 
-//----------------------------------------------//
+ //-------------------------------------//
+
+
+ void multiplication (double a, double b){
+     printf("%f\n", a * b);
+ }
 
 void clear_screen ()
 {

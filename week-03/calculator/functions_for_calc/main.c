@@ -1,20 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "functions.h"
 
 int main()
 {
-    float number1 = 0.0f;
-    float number2 = 0.0f;
-    int op = 0;
+    char input [256];
+    char number1 [10];
+    char number2 [10];
+    char op [10];
 
     start_screen();
-    //give_numbers_and_operator (number1, op, number2);
 
-    scanf("%f", &number1);
-    scanf("%c", &op);
-    scanf("%f", &number2);
-    printf("number 1 is %f, operator %c, num2 is %f", number1, op, number2);
+    //give_numbers_and_operator (number1, op, number2);
+    int index = 0;
+    char character = getchar();
+    while (character != '\n') {
+        input[index] = character;
+		index++;
+		character = getchar();
+    }
+    input[index] = '\0';
+
+    strcpy(number1, strtok(input , " "));
+    strcpy(op, strtok(NULL , " "));
+    strcpy(number2, strtok(NULL , " "));
+
+    double num1 = strtod(number1, NULL);
+    double num2 = strtod(number2, NULL);
+
+    printf(" num1: %f num2 %f\n", num1, num2);
+
+    addiction(num1, num2);
+    substraction (num1, num2);
+    multiplication (num1, num2);
+
+
 
     //if op == '+'
 
