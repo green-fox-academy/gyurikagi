@@ -38,6 +38,9 @@ int main()
     division (num1, num2);
     squaring (num1, num2);
     square_root (num1, num2);
+    division_with_remainder (num1, num2);
+    logarithm  (num1, num2);
+
     //printf("Value 8.0 ^ 3 = %lf\n", fpow(num1, num2));;
 
 
@@ -53,13 +56,6 @@ int main()
 
     //clear paranccsal törlés
 
-    //szorzás
-    //osztás
-    //összeadás
-    //kivonás
-    //négyzetre emelés
-    // négyzetgyök
-    // maradékos osztás
     // logaritmus
     // binto - bináris -> decimálos
     //hexto hexadec -> dec

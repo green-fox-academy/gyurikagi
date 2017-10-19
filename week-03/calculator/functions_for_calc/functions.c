@@ -60,6 +60,14 @@ void square_root (double a, double b) {
     printf("%f\n", pow(a,(1/b)));
     }
 
+void division_with_remainder ( double a, double b) {
+    printf("%f\n", fmod(a, b));
+    }
+
+void logarithm  (double a, double b) {
+    printf("%f\n", log10(b)/ log10(a));
+    }
+
 void clear_screen ()
 {
     system ("cls");
