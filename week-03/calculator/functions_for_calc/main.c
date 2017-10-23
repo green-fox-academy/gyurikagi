@@ -6,77 +6,110 @@
 
 int main()
 {
-    char input [256];
-    char number1 [10];
-    char number2 [10];
-    char op [10];
+    char input [45];
+    char number1 [15];
+    char number2 [15];
+    char op [15];
 
     start_screen();
 
+    do {
     //give_numbers_and_operator (number1, op, number2);
-    int index = 0;
-    char character = getchar();
-    while (character != '\n') {
-        input[index] = character;
-		index++;
-		character = getchar();
-    }
-    input[index] = '\0';
+        int x = 0;
+        int number_of_space = 0;
+        int index = 0;
+        char character = getchar();
+        while (character != '\n') {
+            input[index] = character;
+            index++;
+            character = getchar();
 
-    if ((strcasecmp(input, "exit") == 0))
-        printf("no this function yet");
-    else if ((strcasecmp(input, "clear") == 0))
-        printf("no this function yet");
-    else if ((strcasecmp(input, "help") == 0))
-        printf("no this function yet");
-    else if ((strcasecmp(input, "esc") == 0)) // ezt javítani!!!
-        printf("no this function yet");
-    else
-    {
-    strcpy(number1, strtok(input , " "));
-    strcpy(op, strtok(NULL , " "));
-    strcpy(number2, strtok(NULL , " "));
+          /* if ((character !='37') || (character !='42') || (character !='43') || ('46'>= character) || ('57' <=character <='97') || (character >='122'))
+               { set_cursor_pos(x);
+                printf(" = Bad character input");
+                y++;
+                break;} */
 
-    double num1 = strtod(number1, NULL);
-    double num2 = strtod(number2, NULL);
+        }
+        input[index] = '\0';
 
-    printf(" num1: %f num2 %f\n", num1, num2);
-    if (strcasecmp(op, "+") == 0)
-        addiction(num1, num2);
-    else if  (strcasecmp(op, "-") == 0)
-        substraction (num1, num2);
-    else if ((strcasecmp(op, "*") == 0))
-        multiplication (num1, num2);
-    else if ((strcasecmp(op, "/") == 0))
-        division (num1, num2);
-    else if ((strcasecmp(op, "^") == 0))
-        squaring (num1, num2);
-    else if ((strcasecmp(op, "<") == 0))
-        square_root (num1, num2);
-    else if ((strcasecmp(op, "%") == 0))
-        division_with_remainder (num1, num2);
-    else if ((strcasecmp(op, "log") == 0))
-         logarithm  (num1, num2);
+        x = strlen(input);
 
-    else if ((strcasecmp(op, "binto") == 0))
-        printf("no this function yet");
-    else if ((strcasecmp(op, "hexto") == 0))
-        printf("no this function yet");
-    else if ((strcasecmp(op, "decto") == 0))
-        printf("no this function yet");
-    }
+        if ((strcasecmp(input, "exit") == 0)) {
+            printf("Have a nice day!");
+            exit(0);}
+        else if ((strcasecmp(input, "clear") == 0)) {
+           clear_screen ();
+           y = 0;}
+        else if ((strcasecmp(input, "help") == 0)){
+           start_screen ();
+           y = 0;}
+        else
+        {   strcpy(number1, strtok(input , " "));
+            strcpy(op, strtok(NULL , " "));
+            strcpy(number2, strtok(NULL , " "));
 
-    //clear paranccsal törlés
+            double num1 = strtod(number1, NULL);
+            double num2 = strtod(number2, NULL);
+            int numb1 = atoi(number1);
+            int numb2 = atoi(number2);
 
-    // logaritmus
-    // binto - bináris -> decimálos
-    //hexto hexadec -> dec
-    // decto dec -> bin
+            if (strcasecmp(op, "+") == 0) {
+                set_cursor_pos(x);
+                addiction(num1, num2);
+                y++;}
+            else if  (strcasecmp(op, "-") == 0) {
+                set_cursor_pos(x);
+                substraction (num1, num2);
+                y++; }
+            else if ((strcasecmp(op, "*") == 0)) {
+                set_cursor_pos(x);
+                multiplication (num1, num2);
+                y++;}
+            else if ((strcasecmp(op, "/") == 0)) {
+                set_cursor_pos(x);
+                division (num1, num2);
+                y++; }
+            else if ((strcasecmp(op, "^") == 0)) {
+                set_cursor_pos(x);
+                squaring (num1, num2);
+                y++;}
+            else if ((strcasecmp(op, "<") == 0)) {
+                set_cursor_pos(x);
+                square_root (num1, num2);
+                y++;}
+            else if ((strcasecmp(op, "%") == 0)) {
+                set_cursor_pos(x);
+                division_with_remainder (num1, num2);
+                y++;}
+            else if ((strcasecmp(op, "log") == 0)){
+                set_cursor_pos(x);
+                logarithm  (num1, num2);
+                y++;}
+            else if ((strcasecmp(op, "binto") == 0)) {
+                set_cursor_pos(x);
+                binaryto ( number1, num2);
+                y++;}
+            else if ((strcasecmp(op, "hexto") == 0)) {
+                set_cursor_pos(x);
+                hexadecto(number1, numb2);
+                y++;}
+            else if ((strcasecmp(op, "decto") == 0)) {
+                set_cursor_pos(x);
+                decimalto (number1, numb2);
+                y++;}
+            else {
+                set_cursor_pos(x);
+                printf("= Invalid operands.");
+                y++;}
+            }
+        }
+        while (strcmp(input, "exit") != 0);
+
     // error handling
-        // nullával való osztás
         // érvénytelen karakterek
-    // clear screen
-    // esc - lépjen ki a programból, de addig ne
+        // spacek helye
+
 
     return 0;
 }
