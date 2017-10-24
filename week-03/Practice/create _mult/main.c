@@ -28,13 +28,6 @@
 
     multiple_table (base);
 
-   /* if (base > 0) {
-    for (int i = 1; i < 11; i++){
-        printf("%d\t *\t %d\t = %d\n", i, base, i*base);
-    }
-    }
-    else printf("Please add positive base"); */
-
    return 0;
  }
 
