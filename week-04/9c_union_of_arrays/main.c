@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     int length_of_c = sizeof(c)/ sizeof (int);
 
     printf("length: %d, %d, %d\n", length_of_a, length_of_b, length_of_c);
-  //  safe_union(int *a, int length_of_a, int *b, int length_of_b, int *c, int length_of_c);
+
     for (int i = 0; i<6; i++) {
         printf("%d\n", c[i]);
     }
