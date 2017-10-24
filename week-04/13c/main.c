@@ -10,8 +10,8 @@ int main()
 {
 	char my_string[50] = "Hello world!";
 	//TODO: implement your own strlen function.
-    int length = my_strlen(my_string);
-	printf("The length of string: %d", length);
+
+	printf("The length of string: %d", my_strlen(my_string));
 
 	return 0;
 }

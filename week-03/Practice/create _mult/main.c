@@ -26,12 +26,23 @@
     printf("Give the base of multiplication table: ");
     scanf("%d", &base);
 
-    if (base > 0) {
+    multiple_table (base);
+
+   /* if (base > 0) {
     for (int i = 1; i < 11; i++){
         printf("%d\t *\t %d\t = %d\n", i, base, i*base);
     }
     }
-    else printf("Please add positive base");
+    else printf("Please add positive base"); */
 
    return 0;
+ }
+
+ void multiple_table (int a) {
+    if (a > 0) {
+    for (int i = 1; i < 11; i++){
+        printf("%d\t *\t %d\t = %d\n", i, a, i*a);
+    }
+    }
+    else printf("Please add positive base");
  }
