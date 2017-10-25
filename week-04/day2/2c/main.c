@@ -13,7 +13,7 @@ void make_new_car (struct Car b ){
 
     if (b.type == 3) {
     printf("Cartype %d km %.f Km", b.type, b.km);}
-    else printf("Cartype %s km %.f Km gas %.f", b.type, b.km, b.gas);
+    else printf("Cartype %d km %.f Km gas %.f", b.type, b.km, b.gas);
 }
 // TODO:
 // Write a function that takes a Car as an argument and prints all it's stats
