@@ -16,7 +16,6 @@ int main()
     do {
     //give_numbers_and_operator (number1, op, number2);
         int x = 0;
-        int number_of_space = 0;
         int index = 0;
         char character = getchar();
         while (character != '\n') {
