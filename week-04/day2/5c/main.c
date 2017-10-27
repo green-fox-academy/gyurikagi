@@ -5,7 +5,7 @@ typedef struct house {
     float price;
     int rooms;
     int area;
-}house1, house2, house3;
+};
 // TODO:
 // Create a struct that represents a House
 // It should store:
@@ -24,6 +24,13 @@ typedef struct house {
 // houses that are worth to buy.
 
 int main() {
+    struct house house1;
+    struct house house2;
+    struct house house3;
+    house house1 = {"Link", 123000, 2, 25 };
+    house house2 = {"Home", 1740000, 3, 55 };
+    house house3 = {"street", 2350000, 4, 55 };
+
 
   return 0;
 }

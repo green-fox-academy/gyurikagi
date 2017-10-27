@@ -1,3 +1,5 @@
+#include "user_comm.h"
+
 void print_usage () {
 printf ( "Todo application\n\
 ====================\n\
@@ -10,5 +12,15 @@ Commands:\n\
  -rm   Removes a task\n\
  -c   Completes a task\n\
  -p   Add priority to a task\n\
- -lp  Lists all the tasks by priority)\n");
+ -lp  Lists all the tasks by priority)\n\
+exit  Exit program\n\
+        \n\n");
 }
+
+// tasks
+
+/*todootasks add_new_task (char a) {
+    a.task  = a;
+    return a.task;
+}*/
+

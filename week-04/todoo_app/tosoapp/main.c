@@ -1,24 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "user_comm.h"
 
-// do struct -which data you can write in list
-enum ended_fact {NEW_TASK, ENDED30PERCENT, ENDED60PERCEN, TOTALLY_ENDED};
+static number = 0;
 
-typedef struct {
-    char task [255];
-    int prior;
-    enum ended_fact ended;
-    int deadline;
-    char note [255];
-}todootasks;
 
 int main()
 {
-    print_usage();
+    char input [255];
+    char command[10];
+    char todo[245];
 
-    /*read to do list from file to an array? - létezik már a fájl vagy újat kell csinálni?
+    todootasks tsks[10];
+
+    print_usage();
+    do {
+    gets(input);
+    // examine the space
+    if (strstr(input, " ") != NULL) {
+
+    strcpy(command, strtok(input , " "));
+    strcpy(todo, strtok(NULL , ""));
+
+
+    if (strcasecmp(command, "-a") == 0){
+        strcpy(tsks[number].task, todo);
+        number++;
+    } else if (strcasecmp(command, "-rm") == 0){
+        strcpy(tsks[number].task, todo);
+        number--;}
+    else printf("Good luck");
+
+    } else printf("Please use space\n");
+    }
+    while (strcmp(input, "exit") != 0);
+
+    /*read to do list from file to an struc array? - ha nincs file, akkor majd a végén létrehoz, nem kell itt feltétlen hibakezelés
     get user input - hogyan oldom meg, hogy melyik része struct melyik részéhez megy??
-            strtok vesszõig pl kiv command, ahol szóközig? ?
+            strtok vesszõig pl,  kiv command, ahol szóközig? ?
     write ciklus for working this project - if branches for functions and commands
         - Adds a new task\n\
         -wr  Write current todos to file\n\
@@ -34,8 +54,6 @@ int main()
     - close file
     - esc from the program */
 
-
-
-
     return 0;
 }
+
