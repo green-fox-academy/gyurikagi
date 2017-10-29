@@ -12,7 +12,7 @@ struct Pirate {
 int sum_of_gold (struct Pirate pirates[], int ln);
 // TODO:
 // Create a function that takes an array of pirates (and it's length) then returns the average of the gold / pirate
-int average_gold (struct Pirate pir[], int ln);
+float average_gold (struct Pirate pir[], int ln);
 
 // TODO:
 // Create a function that takes an array of pirates (and it's length) then returns the name of the
@@ -31,7 +31,7 @@ int main() {
     };
     int length = sizeof(pirates)/sizeof(pirates[0]);
     printf("The sum of the gold is: %d\n", sum_of_gold (pirates, length));
-    printf("The average gold / pirate is %d\n", average_gold (pirates, length));
+    printf("The average gold / pirate is %.2f\n", average_gold (pirates, length));
     printf("The richest pirate with wood leg is %s\n", richest_wooden_leg(pirates, length));
     return 0;
 }
@@ -44,8 +44,8 @@ int sum_of_gold (struct Pirate pir[], int ln){
     }
 
 
-int average_gold (struct Pirate pir[], int ln){
-    int average = sum_of_gold (pir, ln)/ln;
+float average_gold (struct Pirate pir[], int ln){
+    float average = (float)sum_of_gold (pir, ln)/(float)ln;
     return average;
 }
 
