@@ -29,8 +29,18 @@ int main()
         number++;
     } else if (strcasecmp(command, "-rm") == 0){
         strcpy(tsks[number].task, todo);
+        /*    if (deleted_element > lengt_of_array) {
+        printf("It is bigger than the length of array");
+    }
+    else
+
+        { for (int a = 0; a < deleted_element-1; a++) {
+        arr[a] = arr [a];
+    }
+    for (int a = deleted_element; a < lengt_of_array; a++) {
+        arr [a-1] = arr [a];*/
         number--;}
-    else printf("Good luck");
+    else printf("Good luck\n");
 
     } else printf("Please use space\n");
     }
@@ -57,3 +67,14 @@ int main()
     return 0;
 }
 
+
+/*     if (deleted_element > lengt_of_array) {
+        printf("It is bigger than the length of array");
+    }
+    else
+void delete_from_list
+        { for (int a = 0; a < deleted_element-1; a++) {
+        arr[a] = arr [a];
+    }
+    for (int a = deleted_element; a < lengt_of_array; a++) {
+        arr [a-1] = arr [a];*/

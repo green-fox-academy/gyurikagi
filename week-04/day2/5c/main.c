@@ -1,11 +1,11 @@
 #include <stdio.h>
 
-typedef struct house {
-    int address;
+typedef struct {
+    char *address;
     float price;
     int rooms;
     int area;
-};
+} house;
 // TODO:
 // Create a struct that represents a House
 // It should store:
@@ -22,15 +22,27 @@ typedef struct house {
 // TODO:
 // Create a function that takes an array of houses (and it's length), and counts the
 // houses that are worth to buy.
+float sqrprice(house *house);
 
 int main() {
-    struct house house1;
-    struct house house2;
-    struct house house3;
-    house house1 = {"Link", 123000, 2, 25 };
-    house house2 = {"Home", 1740000, 3, 55 };
-    house house3 = {"street", 2350000, 4, 55 };
+    house array [] ={
+     {"Béke tér", 1230, 2, 25 },
+     {"Váci út", 1740000, 3, 55 },
+     {"Petõfi utca", 2350000, 4, 55 },
+    };
+    for (int i = 0; i < (sizeof(array)/sizeof(array[0])); i++) {
+         if (sqrprice(&array[i])==1)
+            printf("Buy this house: %d\n", i+1);
+        else
+            printf("Do not buy this house: %d\n", i+1);}
 
 
   return 0;
+}
+
+float sqrprice (house *house) {
+    if ((house->price)/(house->area) > 401) {
+        return 1; }
+    else
+        return 0;
 }
