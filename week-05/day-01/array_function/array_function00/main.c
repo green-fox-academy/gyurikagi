@@ -3,11 +3,24 @@
 #include <time.h>
 
 
-int make_array (int *a, unsigned int ln){
-    for (int i = 0; i < ln; i++) {
+int make_array (int *a, unsigned int lengt){
+    for (int i = 0; i < lengt; i++) {
         a[i] = rand()%100;
         printf("%d | ", a[i] );
     } return a;
+}
+
+int sort_of_element (int *b, unsigned int length) {
+    for (int i = 0; i < length; ++i) {
+       // int temp = b[i];
+        for (int j = i+1; j < length; j++){
+            if (b[i] > b[j]) {
+                int temp = b[i];
+                b[i] = b[j];
+                b[j] = temp;
+                }
+            }
+        } return b;
 }
 /*
  * Create a function that takes an array of integers as an argument (a pointer) and it's length as an unsigned integer.
@@ -21,14 +34,22 @@ int main()
     srand(time(NULL));
 
    unsigned int ln = sizeof(array)/sizeof(array[0]);
+   make_array (array, ln);
+   sort_of_element (array, ln);
 
-   make_array ( array, ln);
-
-   /* for (int i = 0; i < ln; i++) {
-        array[i] = rand()%100;
+  /* for (int i = 0; i < ln; ++i) {
+    int temp = array[i];
+        for (int j = i + 1; j < ln; ++j){
+            if (array[i] > array[j]) {
+                array[i] = array [j];
+                array[j] = temp;
+                }
+       }
+   }*/
+    printf("\n");
+   for (int i = 0; i < ln; i++) {
         printf("%d | ", array[i] );
-    } */
-
+    }
 
 
     return 0;
