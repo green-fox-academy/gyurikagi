@@ -31,8 +31,24 @@ int *sort_of_element(int *b, unsigned int lengt, int *a){
  * Create a second function that takes 3 arguments. An array, it's length and a number it is searching for.
  * The function should return the index of the number when found or -1 if it's not part of the array.
  * IMPORTANT: this function expects a sorted array and uses the strategy we used when we play guess the number.
- *
- *
+ */
+
+ int find_a_number(int *a, unsigned int lengt, int num){
+     for (int i = 0; i < lengt; i++){
+        if (a[i] == num) {
+            printf("The searched number (%d) is %d element of array2", num, i+1);
+            return i;
+        }
+
+ } printf("The searched number (%d) is not on the array2", num);
+            return -1;
+
+ }
+
+
+
+
+ /*
  * In the main function create an unsorted array filled with random numbers, Make it 50 long.
  * Try 2 scenarios:
  *    * In the first: You pick a random element in the unosrted array and check at which index it is after the array is sorted.
@@ -45,7 +61,8 @@ int *sort_of_element(int *b, unsigned int lengt, int *a){
 int main()
 {
     int array[5];
-     int array2[5];
+    int array2[5];
+    int number = 0;
     srand(time(NULL));
 
     unsigned int ln = sizeof(array)/sizeof(array[0]);
@@ -57,5 +74,9 @@ int main()
     for (int i = 0; i < ln; i++) {
         printf("%d | ", array2[i] );
     }
+    printf("\n Give me a number ");
+    scanf("%d", &number);
+    printf("searching number: %d\n", number);
+    find_a_number(array2, ln, number);
     return 0;
 }
