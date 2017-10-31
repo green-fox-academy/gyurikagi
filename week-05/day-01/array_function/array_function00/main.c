@@ -12,7 +12,6 @@ int make_array (int *a, unsigned int lengt){
 
 int sort_of_element (int *b, unsigned int length) {
     for (int i = 0; i < length; ++i) {
-       // int temp = b[i];
         for (int j = i+1; j < length; j++){
             if (b[i] > b[j]) {
                 int temp = b[i];
@@ -36,17 +35,7 @@ int main()
    unsigned int ln = sizeof(array)/sizeof(array[0]);
    make_array (array, ln);
    sort_of_element (array, ln);
-
-  /* for (int i = 0; i < ln; ++i) {
-    int temp = array[i];
-        for (int j = i + 1; j < ln; ++j){
-            if (array[i] > array[j]) {
-                array[i] = array [j];
-                array[j] = temp;
-                }
-       }
-   }*/
-    printf("\n");
+   printf("\n");
    for (int i = 0; i < ln; i++) {
         printf("%d | ", array[i] );
     }
