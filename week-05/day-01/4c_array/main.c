@@ -46,9 +46,6 @@ int main()
     for (int i = 0; i < 9; i++){
         printf("%s\n", p_word[i]);
     }
-
-
-
-    return 0;
+   return 0;
 
 }

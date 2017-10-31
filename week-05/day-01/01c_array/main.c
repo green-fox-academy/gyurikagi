@@ -33,6 +33,5 @@ int main()
      printf("\n The new second array is :");
      for (int i = 0; i < 7 ; i++)
         printf("%d | ", arr2[i]);
-
     return 0;
 }
