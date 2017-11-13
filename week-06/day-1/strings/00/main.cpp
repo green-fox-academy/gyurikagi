@@ -1,9 +1,7 @@
 #include <iostream>
 
 using namespace std;
-#include <iostream>
 
-using namespace std;
 
 // Write a program that prints a few details to the terminal window about you
 // It should print each detail to a new line.
