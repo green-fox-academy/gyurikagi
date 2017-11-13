@@ -14,6 +14,19 @@ namespace Maria {
     int age = 27;
     int number = 7;
 }
+
+int sum_of_ages (){
+    int sum = Mark::age + Maria::age;
+    return sum;
+}
+int main()
+{
+    int sum_of_ages ();
+    cout << sum_of_ages();
+    return 0;
+}
+
+
 // Create your own namespace, called Mark
 // store your name as a string
 // your age as an integer
@@ -26,13 +39,3 @@ namespace Maria {
 //
 // create a function that can add the two age, and returns it
 
-int sum_of_ages (){
-    int sum = Mark::age + Maria::age;
-    return sum;
-}
-int main()
-{
-    int sum_of_ages ();
-    cout << sum_of_ages();
-    return 0;
-}
