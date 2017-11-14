@@ -19,6 +19,7 @@ public:
         int number;
         cout << "Please enter a grade: ";
         cin >> number;
+
         if (0 < number  && number < 6){
             this->sum_grade = sum_grade + number;
             this->counter = counter + 1;
