@@ -31,7 +31,7 @@ public:
         if (person_in_car < number_of_seats){
             person_in_car++;
         } else
-            cout << "The car is full!";
+            cout << "The car is full!\n";
         return person_in_car;
     }
 
