@@ -15,10 +15,11 @@ protected:
     unsigned int age;
     unsigned int kms_runed;
     string  manufacturer;
-    unsigned int number_of_seats;
     unsigned int person_in_car;
+    unsigned int number_of_seats;
+
 public:
-    Car(unsigned int age, unsigned int kms_runed, string manufacturer, unsigned int number_of_seats){
+     Car(unsigned int age, unsigned int kms_runed, string manufacturer, unsigned int number_of_seats){
         this->age = age;
         this->kms_runed = kms_runed;
         this->manufacturer = manufacturer;
@@ -33,14 +34,37 @@ public:
             cout << "The car is full!";
         return person_in_car;
     }
+
+    unsigned int get_numb_of_seets () {
+        return number_of_seats;
+    }
+};
+
+class Fiveseets : public Car {
+
+public:
+    Fiveseets (unsigned int age, unsigned int kms_runed, string manufacturer) : Car(age, kms_runed, manufacturer, 5)
+    {
+
+    }
 };
 
 int main()
 {
     Car car1(15, 1527, "Mazda", 2);
-    car1.add_person();
-    car1.add_person();
-    car1.add_person();
+    for (unsigned int i = 0; i < (car1.get_numb_of_seets()) + 1; ++i){
+        car1.add_person();
+    }
+
+    Fiveseets fs1(5, 127000, "Volvo");
+    fs1.add_person();
+    fs1.add_person();
+    fs1.add_person();
+    fs1.add_person();
+    fs1.add_person();
+    fs1.add_person();
+
+
 
 
     return 0;
