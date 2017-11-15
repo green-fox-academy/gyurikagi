@@ -4,8 +4,9 @@
 using namespace std;
 
 class Shape {
-public:
+protected:
     float area;
+public:
     virtual float calc_area () = 0;
     virtual void print_area (){
         cout << "The area :" << calc_area() << endl;
@@ -15,7 +16,6 @@ public:
 class Circle: public Shape {
 private:
     float rad;
-    float area;
 public:
     Circle(float rad) {
         this->rad = rad;
@@ -31,7 +31,6 @@ class Triangle : public Shape {
 private:
     float base;
     float height;
-    float area;
 public:
     Triangle (float base, float height) {
         this->base = base;
@@ -42,8 +41,6 @@ public:
         area = base * height / 2;
         return area;
     }
-
-
 
 };
 
