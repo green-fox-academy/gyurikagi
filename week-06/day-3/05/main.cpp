@@ -57,15 +57,9 @@ int main()
     }
 
     Fiveseets fs1(5, 127000, "Volvo");
-    fs1.add_person();
-    fs1.add_person();
-    fs1.add_person();
-    fs1.add_person();
-    fs1.add_person();
-    fs1.add_person();
+    for (unsigned int i = 0; i < fs1.get_numb_of_seets() + 1; ++i){
+        fs1.add_person();
 
-
-
-
+    }
     return 0;
 }
