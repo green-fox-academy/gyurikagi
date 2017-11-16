@@ -4,9 +4,9 @@
 
 using namespace std;
 
-Tasks::Tasks()
+Tasks::Tasks(string task)
 {
-
+    this->task = task;
 }
 
 Tasks::~Tasks()
@@ -14,6 +14,7 @@ Tasks::~Tasks()
 
 }
 
-
-
+void Tasks:: print_task(){
+ cout << task;
+}
 

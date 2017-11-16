@@ -1,6 +1,7 @@
 #ifndef TASKS_H
 #define TASKS_H
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -8,8 +9,10 @@ using namespace std;
 class Tasks
 {
     public:
-        Tasks();
+        Tasks(string task);
         virtual ~Tasks();
+        void print_task();
+
 
 
     protected:
@@ -20,6 +23,7 @@ class Tasks
         string task;
         int priority;
         int deadline;
+
 };
 
 #endif // TASKS_H
