@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Tasks.h"
 #include <string>
+#include "TaskList.h"
 
 using namespace std;
 
@@ -16,9 +17,14 @@ int main()
     string command;
     string task;
 
-
     getline(cin, input);
     cout << input << endl;
+
+    if (input == "help"){
+        print_help ();
+    } else if (input == "exit"){
+        cout << "Do some exit";
+    }
 
     spaces(input);
 
@@ -56,9 +62,10 @@ Commands:\n\
  -p   Add priority to a task\n\
  -lp  Lists all the tasks by priority\n\
  -exit Exit from the program\n\
- -help Help";
+ -help Help\n";
 }
 
+// There is any space in input?
 void spaces(string input){
     if (input.find (' ') != string::npos){
         cout  << "Contains at least one space!" << endl;

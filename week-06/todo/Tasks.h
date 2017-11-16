@@ -13,11 +13,7 @@ class Tasks
         virtual ~Tasks();
         void print_task();
 
-
-
     protected:
-
-
 
     private:
         string task;
@@ -25,5 +21,7 @@ class Tasks
         int deadline;
 
 };
+
+
 
 #endif // TASKS_H
