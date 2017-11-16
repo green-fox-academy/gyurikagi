@@ -1,16 +1,34 @@
 #include <iostream>
 #include "Tasks.h"
+#include <string>
 
 using namespace std;
 
 void print_help ();
+void spaces(string);
 
 
 int main()
 {
     print_help ();
-    Tasks t1("Bay 5 l milk", 2, 20171012);
-    cout << "Hello world!" << endl;
+
+    string input;
+    string command;
+
+    string task;
+
+
+    getline(cin, input);
+    cout << input << endl;
+    //string pos = );
+    spaces(input);
+    if (input.find(' ') !=  string::npos) {
+        command = input.substr (0, input.find(' '));
+        task = input.substr(input.find(' ') + 1);
+     } else cout << "Does not contain any spaces!";
+
+     cout << "Command: " << command <<" task: " << task << "input: " << input;
+
     return 0;
 }
 
@@ -29,3 +47,16 @@ Commands:\n\
  -p   Add priority to a task\n\
  -lp  Lists all the tasks by priority\n";
 }
+
+void spaces(string input){
+    if (input.find (' ') != string::npos){
+        cout  << "Contains at least one space!" << endl;
+    } else {
+        cout  << "Does not contain any spaces!" << endl;
+        }
+}
+
+//function for slice the input for command and the other;
+
+
+

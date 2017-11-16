@@ -8,8 +8,9 @@ using namespace std;
 class Tasks
 {
     public:
-        Tasks(string task, int priority, int deadline);
+        Tasks();
         virtual ~Tasks();
+
 
     protected:
 

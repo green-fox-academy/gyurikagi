@@ -1,18 +1,19 @@
 #include "Tasks.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
 
-Tasks::Tasks( string task, int priority, int deadline)
+Tasks::Tasks()
 {
-    this->task = task;
-    this->priority = priority;
-    this->deadline = deadline;
+
 }
 
 Tasks::~Tasks()
 {
 
 }
+
+
 
 
