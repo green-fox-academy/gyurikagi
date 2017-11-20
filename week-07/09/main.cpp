@@ -31,6 +31,8 @@ using namespace std;
     return num;
 }
 
+
+
 int main() {
     try {
     int base = get_a_number();
