@@ -43,7 +43,8 @@ public:
 class Fiveseets : public Car {
 
 public:
-    Fiveseets (unsigned int age, unsigned int kms_runed, string manufacturer) : Car(age, kms_runed, manufacturer, 5)
+    Fiveseets (unsigned int age, unsigned int kms_runed, string manufacturer) :
+        Car(age, kms_runed, manufacturer, 5)
     {
 
     }

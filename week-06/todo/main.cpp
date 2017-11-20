@@ -1,5 +1,4 @@
 #include <iostream>
-#include "Tasks.h"
 #include <string>
 #include "TaskList.h"
 
@@ -37,9 +36,9 @@ int main()
      }
       cout << "Command: " << command <<" task: " << task << "input: " << input << endl;
      if (command == "-a"){
-        Tasks t1(task);
+
         counter++;
-        t1.print_task();
+
 
      } else
         cout << "Bad girl!";

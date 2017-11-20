@@ -1,12 +1,17 @@
 #include "TaskList.h"
 #include <vector>
+#include <string>
 
-TaskList::TaskList()
+using namespace std;
+
+TaskList::TaskList(string Task)
 {
-    //ctor
+    v_task.push_back(Task);
 }
 
 TaskList::~TaskList()
 {
     //dtor
 }
+
+

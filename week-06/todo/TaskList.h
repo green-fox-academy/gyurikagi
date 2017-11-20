@@ -8,11 +8,16 @@ using namespace std;
 class TaskList
 {
     public:
-        TaskList();
+        TaskList(string);
 
         virtual ~TaskList();
 
     protected:
+        typedef struct {
+            string task;
+            int priority;
+            int deadline;
+        } Tasks;
         vector <Tasks> v_task;
 
     private:
