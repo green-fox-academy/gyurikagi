@@ -47,11 +47,11 @@ int main() {
     Integer a;
     int b = 7;
     Integer c(3);
-    Integer d(7);
+    Integer d(9);
 
     cout << c.get() << endl;;
     cout << a.get() << endl;;
-    cout << a.add(3) << endl;
+    cout << a.add(b) << endl;
     cout << a.add(c) << endl;
     cout << c.add(d) << endl;
 
