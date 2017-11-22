@@ -14,6 +14,7 @@ class ATM
         ~ATM();
         void add_element(User user);
         void richest_user();
+        void add_money();
 
     protected:
 
