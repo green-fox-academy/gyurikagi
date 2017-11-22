@@ -12,7 +12,7 @@ class User
         User(string un, int pin, float balance, Type typedf);
         ~User();
 
-    protected:
+
         string un;
         int pin;
         float balance;
