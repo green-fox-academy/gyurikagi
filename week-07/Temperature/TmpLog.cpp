@@ -6,7 +6,7 @@ using namespace std;
 
 TmpLog::TmpLog()
 {
-    //ctor
+    open = false;
 }
 
 TmpLog::~TmpLog()
@@ -29,28 +29,35 @@ Commands:\n\
 
 void TmpLog::open_port()  {
         serial->openPort();
-
+        open = true;
 
 }
 
 void TmpLog::start_stop_log(){
-    string line;
-    while(1){
-        serial->readLineFromPort(&line);
-        if (line.length() > 0){
-            cout << line << endl;
-            database.push_back(line);
-        }
-        if (kbhit()){
-            if (getch()== 's'){
-                break;
+    try {
+        string line;
+        if (open== false){
+            throw runtime_error("Port does not open! First press 'o' !");
+        } else {
+            while(1){
+                serial->readLineFromPort(&line);
+                if (line.length() > 0){
+                    cout << line << endl;
+                    database.push_back(line);
+                }
+                if (kbhit()){
+                    if (getch()== 's'){
+                        break;
+                    }
+                }
             }
         }
-    }
-
+    } catch (runtime_error &err) {
+        cout << err.what()<< endl;
+  }
 }
-
 
 void TmpLog::close_port (){
     serial->closePort();
+    open = false;
 }
