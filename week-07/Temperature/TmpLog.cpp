@@ -29,13 +29,19 @@ Commands:\n\
 
 void TmpLog::open_port()  {
         serial->openPort();
-      /*  string line;
-        while(1){
-        serial->readLineFromPort(&line);
-        if (line.length() > 0){
-        cout << line << endl;
-        }
-        } */
+
+
+}
+
+void TmpLog::start_stop_log(){
+    string line;
+    while(1){
+    serial->readLineFromPort(&line);
+    if (line.length() > 0){
+    cout << line << endl;
+    }
+    }
+
 }
 
 

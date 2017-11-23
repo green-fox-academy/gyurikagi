@@ -24,19 +24,18 @@ int main()
     TmpLog tmp;
     tmp.print_screen();
 
-    do {
+    while (userinput != "e") {
         cin >> userinput;
         cin.ignore();
         if (userinput == "h"){
         tmp.print_screen();
-
         } else if (userinput == "o") {
             tmp.open_port();
         } else if (userinput == "c"){
            tmp.close_port();
         }
 
-    } while (userinput != "e");
+    }
 
         // connection
 

@@ -15,12 +15,15 @@ class TmpLog
         void print_screen();
         void open_port();
         void close_port();
+        void start_stop_log();
 
        /* void set_port_name;
+
 
 */
     protected:
         string line;
+        bool run = false;
         SerialPortWrapper *serial = new SerialPortWrapper("COM3", 115200);
 
 
