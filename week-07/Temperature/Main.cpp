@@ -33,6 +33,8 @@ int main()
             tmp.open_port();
         } else if (userinput == "c"){
            tmp.close_port();
+        } else if (userinput == "s") {
+            tmp.start_stop_log();
         }
 
     }

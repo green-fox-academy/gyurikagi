@@ -3,6 +3,7 @@
 
 #include <string>
 #include <conio.h>
+#include <vector>
 #include "SerialPortWrapper.h"
  using namespace std;
 
@@ -10,7 +11,9 @@
 class TmpLog
 {
     public:
-        TmpLog();
+        TmpLog()ÿ{
+            open = false;
+        };
         ~TmpLog();
         void print_screen();
         void open_port();
@@ -23,8 +26,9 @@ class TmpLog
 */
     protected:
         string line;
-        bool run = false;
+        bool open;
         SerialPortWrapper *serial = new SerialPortWrapper("COM3", 115200);
+        vector <string> database;
 
 
 

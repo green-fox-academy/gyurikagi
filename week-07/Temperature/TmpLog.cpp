@@ -36,10 +36,16 @@ void TmpLog::open_port()  {
 void TmpLog::start_stop_log(){
     string line;
     while(1){
-    serial->readLineFromPort(&line);
-    if (line.length() > 0){
-    cout << line << endl;
-    }
+        serial->readLineFromPort(&line);
+        if (line.length() > 0){
+            cout << line << endl;
+            database.push_back(line);
+        }
+        if (kbhit()){
+            if (getch()== 's'){
+                break;
+            }
+        }
     }
 
 }
