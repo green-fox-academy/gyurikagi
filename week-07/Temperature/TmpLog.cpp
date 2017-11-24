@@ -61,3 +61,7 @@ void TmpLog::close_port (){
     serial->closePort();
     open = false;
 }
+
+datas TmpLog::get_data_from_line(){
+
+}
