@@ -95,10 +95,19 @@ int main(void)
   
   /* Add your application code here     */
   /* Infinite loop */
-  while (1)
+ 	  BSP_LED_Init(LED_GREEN);
+	  BSP_PB_Init(BUTTON_WAKEUP, BUTTON_MODE_GPIO);
+	 while (1)
   {
 	  //TODO:
+
+
 	  //Write a simple program witch flashes(toggle) the led when the button is pressed
+	  if (BSP_PB_GetState(BUTTON_WAKEUP) !=0)
+		  BSP_LED_On(LED_GREEN);
+	  else {
+		  BSP_LED_Off(LED_GREEN);
+	  }
   }
 }
 
