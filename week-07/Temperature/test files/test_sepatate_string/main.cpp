@@ -7,16 +7,18 @@
 using namespace std;
 
 int main()
-{   string input;
-    int year;
+{   string input = "2017.01.01 23:00:00 25";
+   struct datas{
+    int year;;
     int month;
     int day;
     int hour;
     int minut;
     int sec;
     int celc;
+   };
     try {
-    getline(cin, input);
+    //getline(cin, input);
     size_t check = input.find_first_not_of("0123456789 -.:");
     if (check != string::npos) {
         throw -1;
@@ -49,7 +51,7 @@ int main()
             celc = atoi(input.c_str());
         }
       }
-      cout << "year: " << year<<" "<< month << " " << day << "time: " << hour<<" " << minut<< " " << sec << "celc: " << celc;
+      cout << "year: " << year<<" "<< month << " " << day << " time: " << hour<<" " << minut<< " " << sec << " celc: " << celc;
     } catch (int x){
         return x;
     }

@@ -8,36 +8,37 @@
 #include "SerialPortWrapper.h"
  using namespace std;
 
+typedef struct {
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minut;
+    int sec;
+    int celc;
+}datas;
 
 class TmpLog
 {
-
     protected:
         string line;
         bool open;
         SerialPortWrapper *serial = new SerialPortWrapper("COM3", 115200);
         vector <string> database;
-        struct datas {
-            int year;
-            int month;
-            int day;
-            int hour;
-            int minut;
-            int sec;
-            int celc;
-        } ;
+
 
 
     private:
 
-        public:
+    public:
+
         TmpLog();
         ~TmpLog();
         void print_screen();
         void open_port();
         void close_port();
         void start_stop_log();
-        datas get_data_from_line();
+        datas get_data_from_line(string input);
 
        /* void set_port_name;
 */

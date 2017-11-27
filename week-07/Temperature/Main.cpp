@@ -15,12 +15,12 @@ int main()
 
 
     // port name
-  /*  vector<string> ports = SerialPortWrapper::listAvailablePorts();
+    vector<string> ports = SerialPortWrapper::listAvailablePorts();
     cout << "Number of found serial ports: " << ports.size() << endl;
 
     for (unsigned int i = 0; i < ports.size(); i++) {
         cout << "\tPort name: " << ports.at(i) << endl;
-    } */
+    }
     TmpLog tmp;
     tmp.print_screen();
 
