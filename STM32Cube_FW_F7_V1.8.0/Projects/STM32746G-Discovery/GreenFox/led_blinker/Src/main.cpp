@@ -66,6 +66,7 @@ static void CPU_CACHE_Enable(void);
 int main(void)
 {
 
+
   /* This project template calls firstly two functions in order to configure MPU feature 
      and to enable the CPU Cache, respectively MPU_Config() and CPU_CACHE_Enable().
      These functions are provided as template implementation that User may integrate 
@@ -88,21 +89,71 @@ int main(void)
 
   /* Configure the System clock to have a frequency of 216 MHz */
   SystemClock_Config();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+
+  GPIO_InitTypeDef led1;            // create a config structure
+  led1.Pin = GPIO_PIN_0;            // this is about PIN 0
+  led1.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  led1.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  led1.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
 
 
+  GPIO_InitTypeDef led2;            // create a config structure
+    led2.Pin = GPIO_PIN_10;            // this is about PIN 0
+    led2.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+    led2.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+    led2.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+   GPIO_InitTypeDef led3;            // create a config structure
+    led3.Pin = GPIO_PIN_9;            // this is about PIN 0
+    led3.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+    led3.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+    led3.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+    GPIO_InitTypeDef led4;            // create a config structure
+       led4.Pin = GPIO_PIN_8;            // this is about PIN 0
+       led4.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+       led4.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+       led4.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+
+
+    HAL_GPIO_Init(GPIOA, &led1);
+    HAL_GPIO_Init(GPIOF, &led2);
+    HAL_GPIO_Init(GPIOF, &led3);
+    HAL_GPIO_Init(GPIOF, &led4);
   /* Add your application code here     */
-  BSP_LED_Init(LED_GREEN);
-  BSP_LED_On(LED_GREEN);
+
+
 
   /* Infinite loop */
   while (1)
   {
 	  //TODO:
+
 	  //Flash the ledwith 200 ms period time
-	  BSP_LED_Off(LED_GREEN);
-	  HAL_Delay(1000);
-	  BSP_LED_On(LED_GREEN);
-	  HAL_Delay(1000);
+
+
+	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);   // setting the pin to 1
+	  HAL_Delay(1000);                                      // wait a second
+	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET); // setting the pin to 0
+	  HAL_Delay(1000);                                      // wait a second
+
+	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_SET);   // setting the pin to 1
+	  HAL_Delay(1000);                                      // wait a second
+	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET); // setting the pin to 0
+	  HAL_Delay(1000);     			// wait a second
+
+	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_SET);   // setting the pin to 1
+	  HAL_Delay(1000);                                      // wait a second
+	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET); // setting the pin to 0
+	  HAL_Delay(1000);     			// wait a second
+
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);   // setting the pin to 1
+	  HAL_Delay(1000);                                      // wait a second
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET); // setting the pin to 0
+	  HAL_Delay(1000);                                      // wait a second
 
   }
 }

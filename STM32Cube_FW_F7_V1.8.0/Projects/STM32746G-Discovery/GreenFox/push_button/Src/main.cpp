@@ -103,8 +103,9 @@ int main(void)
 
 
 	  //Write a simple program witch flashes(toggle) the led when the button is pressed
-	  if (BSP_PB_GetState(BUTTON_WAKEUP) !=0)
+	  if (BSP_PB_GetState(BUTTON_WAKEUP) !=0) {
 		  BSP_LED_On(LED_GREEN);
+	  	  HAL_Delay(1000); }
 	  else {
 		  BSP_LED_Off(LED_GREEN);
 	  }
