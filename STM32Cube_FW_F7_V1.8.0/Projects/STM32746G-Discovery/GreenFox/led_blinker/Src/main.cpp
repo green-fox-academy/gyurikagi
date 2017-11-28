@@ -112,10 +112,17 @@ int main(void)
     led3.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
 
     GPIO_InitTypeDef led4;            // create a config structure
-       led4.Pin = GPIO_PIN_8;            // this is about PIN 0
-       led4.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
-       led4.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
-       led4.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+    led4.Pin = GPIO_PIN_8;            // this is about PIN 0
+    led4.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+    led4.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+    led4.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+    GPIO_InitTypeDef butt1;
+    butt1.Pin = GPIO_PIN_7;
+    butt1.Mode = GPIO_MODE_INPUT;
+    butt1.Pull = GPIO_PULLUP;
+    butt1.Speed = GPIO_SPEED_HIGH;
+
 
 
 
@@ -123,17 +130,19 @@ int main(void)
     HAL_GPIO_Init(GPIOF, &led2);
     HAL_GPIO_Init(GPIOF, &led3);
     HAL_GPIO_Init(GPIOF, &led4);
+    HAL_GPIO_Init(GPIOF, &butt1);
   /* Add your application code here     */
 
 
 
+
+
   /* Infinite loop */
-  while (1)
+   while (1)
   {
 	  //TODO:
-
-	  //Flash the ledwith 200 ms period time
-
+	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_7)==0)
+	{
 
 	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);   // setting the pin to 1
 	  HAL_Delay(50);
@@ -149,10 +158,15 @@ int main(void)
 	  HAL_Delay(50);
 	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET); // setting the pin to 0
 	  HAL_Delay(50);
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET); // setting the pin to 0
-	  HAL_Delay(50);                                      // wait a second
 
 
+	}else{
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET); // setting the pin to 0
+        // wait a second
+		HAL_Delay(500);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET); // setting the pin to 0
+		HAL_Delay(500);
+	}
 
   }
 }
