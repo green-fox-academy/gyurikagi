@@ -136,24 +136,23 @@ int main(void)
 
 
 	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);   // setting the pin to 1
-	  HAL_Delay(1000);                                      // wait a second
-	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET); // setting the pin to 0
-	  HAL_Delay(1000);                                      // wait a second
-
+	  HAL_Delay(50);
 	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_SET);   // setting the pin to 1
-	  HAL_Delay(1000);                                      // wait a second
-	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET); // setting the pin to 0
-	  HAL_Delay(1000);     			// wait a second
-
+	  HAL_Delay(50);
 	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_SET);   // setting the pin to 1
-	  HAL_Delay(1000);                                      // wait a second
-	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET); // setting the pin to 0
-	  HAL_Delay(1000);     			// wait a second
-
+	  HAL_Delay(50);
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);   // setting the pin to 1
-	  HAL_Delay(1000);                                      // wait a second
+	  HAL_Delay(50);                                      // wait a second
+	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET); // setting the pin to 0
+	  HAL_Delay(50);
+	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET); // setting the pin to 0
+	  HAL_Delay(50);
+	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET); // setting the pin to 0
+	  HAL_Delay(50);
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET); // setting the pin to 0
-	  HAL_Delay(1000);                                      // wait a second
+	  HAL_Delay(50);                                      // wait a second
+
+
 
   }
 }
