@@ -78,7 +78,7 @@ void knight_flash_leds_back() {
 	}
 }
 
-void knight_rider_twosides(unsigned long int speed){
+void knight_rider_twosides(unsigned long int speed) {
 	uint16_t mask1 = 0b01000000;
 		for (int i = 0; i < 5; ++i) {
 			GPIOF->ODR = GPIOF->ODR | mask1;
@@ -166,12 +166,19 @@ int main(void) {
 	;
 	__HAL_RCC_GPIOF_CLK_ENABLE()
 	;
-
+	__HAL_RCC_GPIOB_CLK_ENABLE()
+	;
 	GPIO_InitTypeDef butt1;            // create a config structure
 	butt1.Pin = GPIO_PIN_0;            // this is about PIN 0
 	butt1.Mode = GPIO_MODE_INPUT; // Configure as output with push-up-down enabled
 	butt1.Pull = GPIO_PULLUP;        // the push-up-down should work as pulldown
 	butt1.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+	GPIO_InitTypeDef butt2;            // create a config structure
+	butt2.Pin = GPIO_PIN_8;            // this is about PIN 0
+	butt2.Mode = GPIO_MODE_INPUT; // Configure as output with push-up-down enabled
+	butt2.Pull = GPIO_PULLUP;        // the push-up-down should work as pulldown
+	butt2.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
 
 	GPIO_InitTypeDef led1;            // create a config structure
 	led1.Pin = GPIO_PIN_10;            // this is about PIN 0
@@ -204,6 +211,7 @@ int main(void) {
 	led5.Speed = GPIO_SPEED_HIGH;
 
 	HAL_GPIO_Init(GPIOA, &butt1);
+	HAL_GPIO_Init(GPIOB, &butt2);
 	HAL_GPIO_Init(GPIOF, &led1);
 	HAL_GPIO_Init(GPIOF, &led2);
 	HAL_GPIO_Init(GPIOF, &led3);
@@ -216,15 +224,14 @@ int main(void) {
 	while (1) {
 		//TODO:
 		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0) {
-			speed = speed - 30;
-				if (speed == 30)
-					speed = 300;
-		knight_rider_twosides(speed);
-
-			}
-
-
+			speed = speed - 100;
 		}
+		if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8) == 0) {
+			speed = speed + 100;
+		}
+
+		knight_rider_twosides(speed);
+	}
 
 
 }
