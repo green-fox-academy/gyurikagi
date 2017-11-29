@@ -62,7 +62,7 @@ void knight_flash_leds() {
 	uint16_t mask = 0b01000000;
 	for (int i = 0; i < 5; ++i) {
 		GPIOF->ODR = GPIOF->ODR | mask; // set the lowest bit to 1, leave the others as they are (this will set the lowest bit - PIN 0 - to 1)
-		HAL_Delay(50);
+		HAL_Delay(30);
 		GPIOF->ODR = GPIOF->ODR & ~mask;
 		mask <<= 1;
 	}
@@ -71,12 +71,33 @@ void knight_flash_leds() {
 void knight_flash_leds_back() {
 	uint16_t mask = 0b0000010000000000;
 	for (int i = 0; i < 5; ++i) {
-		GPIOF->ODR = GPIOF->ODR | mask; // set the lowest bit to 1, leave the others as they are (this will set the lowest bit - PIN 0 - to 1)
-		HAL_Delay(50);
+		GPIOF->ODR = GPIOF->ODR | mask;
+		HAL_Delay(30);
 		GPIOF->ODR = GPIOF->ODR & ~mask;
 		mask >>= 1;
 	}
 }
+
+void knight_rider_twosides(unsigned long int speed){
+	uint16_t mask1 = 0b01000000;
+		for (int i = 0; i < 5; ++i) {
+			GPIOF->ODR = GPIOF->ODR | mask1;
+			HAL_Delay(speed);
+			GPIOF->ODR = GPIOF->ODR & ~mask1;
+			mask1 <<= 1;
+		}
+		uint16_t mask = 0b0000010000000000;
+			for (int i = 0; i < 5; ++i) {
+				GPIOF->ODR = GPIOF->ODR | mask;
+				HAL_Delay(speed);
+				GPIOF->ODR = GPIOF->ODR & ~mask;
+				mask >>= 1;
+			}
+
+}
+
+
+
 
 void turn_on_leds() {
 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET); // setting the pin to 1
@@ -191,22 +212,21 @@ int main(void) {
 	/* Add your application code here     */
 
 	/* Infinite loop */
+	unsigned long int speed = 300;
 	while (1) {
 		//TODO:
 		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0) {
-			++counter;
-			if (counter % 3 == 1) {
-				turn_on_leds();
-			} else if (counter % 3 == 2) {
-				flash_leds();
-			} else if (counter % 3 == 0) {
-				turn_off_leds();
+			speed = speed - 30;
+				if (speed == 30)
+					speed = 300;
+		knight_rider_twosides(speed);
 
 			}
-			HAL_Delay(300);
+
+
 		}
 
-	}
+
 }
 
 /**
