@@ -144,7 +144,6 @@ int main(void) {
 
 	uint32_t push_time;
 	uint32_t start_time;
-	uint32_t aal_time = 0;
 
 	while (1) {
 		while (BSP_PB_GetState(BUTTON_KEY) == 0) {
@@ -154,6 +153,7 @@ int main(void) {
 		while (BSP_PB_GetState(BUTTON_KEY) == 1) {
 
 		}
+		uint32_t avg_time = 0;
 		for (int i = 0; i< 10; ++i){
 		HAL_RNG_GenerateRandomNumber(&rnd, &rnd_num);
 		rand_num = rnd_num % 10000 + 1;
@@ -162,11 +162,12 @@ int main(void) {
 		start_time = HAL_GetTick();
 		My_Delay(10000);
 		push_time = HAL_GetTick();
-		aal_time = push_time - start_time;
-		printf("Your time is %d msec.\n", aal_time);
+		printf("Your time is %d msec.\n",  (push_time - start_time));
 		BSP_LED_Off(LED_GREEN);
+		avg_time = avg_time + (push_time - start_time);
 		}
-		printf("Your average is: %d\n", aal_time/10);
+		printf("Your average is: %d\n", avg_time/10);
+		avg_time = 0;
 	}
 
 
