@@ -145,41 +145,48 @@ int main(void) {
 	uint32_t push_time;
 	uint32_t start_time;
 	uint32_t arr[2];
-
-	while (1) {
-		for (int j = 0; j < 2; ++j) {
-			while (BSP_PB_GetState(BUTTON_KEY) == 0) {
-				starting_led();
-			}
+	//for (int j = 0; j < 2; ++j) {
+	//while (1) {
+	for (int j = 0; j < 2; ++j) {
+		do {
+			BSP_LED_On(LED_GREEN);
+			My_Delay(500);
 			BSP_LED_Off(LED_GREEN);
-			while (BSP_PB_GetState(BUTTON_KEY) == 1) {
+			My_Delay(500);
+		} while (BSP_PB_GetState(BUTTON_KEY) == 0);
 
-			}
-			for (int j = 0; j < 2; ++j) {
-			uint32_t avg_time = 0;
-			for (int i = 0; i < 5; ++i) {
-				HAL_RNG_GenerateRandomNumber(&rnd, &rnd_num);
-				rand_num = rnd_num % 10000 + 1;
-				HAL_Delay(rand_num);
-				BSP_LED_On(LED_GREEN);
-				start_time = HAL_GetTick();
-				My_Delay(10000);
-				push_time = HAL_GetTick();
-				printf("Your time is %d msec.\n", (push_time - start_time));
-				BSP_LED_Off(LED_GREEN);
-				avg_time = avg_time + (push_time - start_time);
-			}
-			printf("Your average is: %d\n", avg_time / 5);
-			arr[j] = avg_time;
-			avg_time = 0;
-			break;
+		BSP_LED_Off(LED_GREEN);
+		while (BSP_PB_GetState(BUTTON_KEY) == 1) {
+
 		}
+
+		uint32_t avg_time = 0;
+		for (int i = 0; i < 5; ++i) {
+			HAL_RNG_GenerateRandomNumber(&rnd, &rnd_num);
+			rand_num = rnd_num % 10000 + 1;
+			HAL_Delay(rand_num);
+			BSP_LED_On(LED_GREEN);
+			start_time = HAL_GetTick();
+			My_Delay(10000);
+			push_time = HAL_GetTick();
+			printf("Your time is %d msec.\n", (push_time - start_time));
+			BSP_LED_Off(LED_GREEN);
+			avg_time = avg_time + (push_time - start_time);
+		}
+		printf("Your average is: %d\n", avg_time / 5);
+		arr[j] = avg_time;
+		avg_time = 0;
+
 		printf("Next player\n");
-	} if (arr[0] < arr[1]) {
-		printf("The winner is the first player\n");}
-	else {
-		printf("The winner is the first player\n");}
-}
+		HAL_Delay(200);
+
+	}
+	if (arr[0] < arr[1]) {
+		printf("The winner is the first player\n");
+	} else {
+		printf("The winner is the second player\n");
+	}
+	//}
 }
 
 /**
