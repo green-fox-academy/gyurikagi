@@ -145,14 +145,10 @@ int main(void) {
 	uint32_t push_time;
 	uint32_t start_time;
 	uint32_t arr[2];
-	//for (int j = 0; j < 2; ++j) {
-	//while (1) {
+
 	for (int j = 0; j < 2; ++j) {
 		do {
-			BSP_LED_On(LED_GREEN);
-			My_Delay(500);
-			BSP_LED_Off(LED_GREEN);
-			My_Delay(500);
+			starting_led();
 		} while (BSP_PB_GetState(BUTTON_KEY) == 0);
 
 		BSP_LED_Off(LED_GREEN);
@@ -180,13 +176,13 @@ int main(void) {
 		printf("Next player\n");
 		HAL_Delay(200);
 
+
 	}
 	if (arr[0] < arr[1]) {
 		printf("The winner is the first player\n");
 	} else {
 		printf("The winner is the second player\n");
 	}
-	//}
 }
 
 /**

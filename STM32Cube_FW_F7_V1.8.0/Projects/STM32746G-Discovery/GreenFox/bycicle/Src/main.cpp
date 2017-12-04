@@ -58,13 +58,23 @@ static void CPU_CACHE_Enable(void);
 unsigned int counter = 0;
 bool wasPushed = false;
 
+void My_Delay(uint32_t Delay) {
+	uint32_t tickstart = 0;
+	tickstart = HAL_GetTick();
+	while ((HAL_GetTick() - tickstart) < Delay) {
+		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0)
+			return;
+	}
+}
+
 void knight_flash_leds() {
 	uint16_t mask = 0b01000000;
 	for (int i = 0; i < 5; ++i) {
 		GPIOF->ODR = GPIOF->ODR | mask; // set the lowest bit to 1, leave the others as they are (this will set the lowest bit - PIN 0 - to 1)
-		HAL_Delay(50);
+		My_Delay(10);
 		GPIOF->ODR = GPIOF->ODR & ~mask;
 		mask <<= 1;
+		My_Delay(10);
 	}
 }
 
@@ -72,9 +82,10 @@ void knight_flash_leds_back() {
 	uint16_t mask = 0b0000010000000000;
 	for (int i = 0; i < 5; ++i) {
 		GPIOF->ODR = GPIOF->ODR | mask; // set the lowest bit to 1, leave the others as they are (this will set the lowest bit - PIN 0 - to 1)
-		HAL_Delay(50);
+		My_Delay(10);
 		GPIOF->ODR = GPIOF->ODR & ~mask;
 		mask >>= 1;
+		My_Delay(10);
 	}
 }
 
@@ -96,6 +107,7 @@ void turn_off_leds() {
 
 }
 
+
 void flash_leds() {
 	bool prevState = true;
 	bool newState = true;
@@ -106,9 +118,28 @@ void flash_leds() {
 		HAL_Delay(70);
 		prevState = newState;
 		newState = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0;
-		counter = 0;
+		counter = counter -1;
 	}
 }
+
+void rider_leds() {
+	bool prevState = true;
+	bool newState = true;
+	while (prevState || !newState) {
+		knight_flash_leds();
+		My_Delay(10);
+		prevState = newState;
+		newState = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0;
+		knight_flash_leds_back();
+		My_Delay(10);
+		prevState = newState;
+		newState = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0;
+
+	}
+
+}
+
+
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -192,20 +223,23 @@ int main(void) {
 
 	/* Infinite loop */
 	while (1) {
-		//TODO:
 		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0) {
 			++counter;
 			if (counter % 3 == 1) {
 				turn_on_leds();
+				//rider_leds();
 			} else if (counter % 3 == 2) {
 				flash_leds();
 			} else if (counter % 3 == 0) {
 				turn_off_leds();
+				counter = 0;
+		//	} else if (counter % 4 == 0) {
+		//		rider_leds();
 
 			}
 			HAL_Delay(300);
-		}
 
+		}
 	}
 }
 
