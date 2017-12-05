@@ -52,7 +52,9 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
-TIM_HandleTypeDef    TimHandle;           //the timer's config structure
+TIM_HandleTypeDef    TimHandle;
+TIM_OC_InitTypeDef sConfig;
+GPIO_InitTypeDef led1;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -115,22 +117,26 @@ int main(void)
   BSP_COM_Init(COM1, &uart_handle);
 
   __HAL_RCC_TIM1_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
   TimHandle.Instance               = TIM1;
-  TimHandle.Init.Period            = 0xFFFF;
-  TimHandle.Init.Prescaler         = 54000;
+  TimHandle.Init.Period            = 3000;
+  TimHandle.Init.Prescaler         = 2500;
   TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
   TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
 
-  HAL_TIM_Base_Init(&TimHandle);            //Configure the timer
 
-  HAL_TIM_Base_Start(&TimHandle);
-  __HAL_RCC_GPIOF_CLK_ENABLE();
+  sConfig.OCMode       = TIM_OCMODE_PWM1;
+  sConfig.Pulse = 10;
 
-  __HAL_RCC_GPIOA_CLK_ENABLE();             //Enable GPIOA clock
-	GPIO_InitTypeDef led1;
+
+
+  HAL_TIM_PWM_Init(&TimHandle);
+
+
 	led1.Pin = GPIO_PIN_8;
-	led1.Mode = GPIO_MODE_OUTPUT_PP;
-	led1.Pull = GPIO_PULLDOWN;
+	led1.Mode = GPIO_MODE_AF_PP;
+	led1.Pull = GPIO_NOPULL;
 	led1.Speed = GPIO_SPEED_HIGH;
 	led1.Alternate = GPIO_AF1_TIM1;
 
@@ -144,30 +150,11 @@ int main(void)
   printf("\n-----------------WELCOME-----------------\r\n");
   printf("**********in STATIC timer & pwm WS**********\r\n\n");
 
- // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
 
-  TIM_OC_InitTypeDef sConfig;
-
-  HAL_TIM_PWM_Init(&TimHandle);
-
-  sConfig.OCMode       = TIM_OCMODE_PWM1;
-  sConfig.Pulse = 0xFFFF/2;
-
-  HAL_TIM_PWM_ConfigChannel(&TimHandle, TIM1, TIM_CHANNEL_1);
+  HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, TIM_CHANNEL_1);
 
   HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_1);
 
-
- // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
-
-
-
-
-
-//  GPIO_InitTypeDef ledConfig;               //set upthe pin, push-pull, no pullup..etc
-//  ledConfig.Alternate = GPIO_AF1_TIM1;      // and the alternate function is to use TIM1 timer's first channel
-
- // HAL_GPIO_Init(GPIOA, &ledConfig);
 
 
 
@@ -175,8 +162,8 @@ int main(void)
 
 	  while (1)
 	  {
-		  printf("%lu\r\n", TIM1->CNT);
- 		  HAL_Delay(1000);
+		//  printf("%lu\r\n", TIM1->CNT);
+ 		//  HAL_Delay(1000);
 	  }
 }
 
