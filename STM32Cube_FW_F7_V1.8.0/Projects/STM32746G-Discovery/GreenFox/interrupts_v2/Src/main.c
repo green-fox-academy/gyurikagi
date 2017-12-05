@@ -77,6 +77,13 @@ static void CPU_CACHE_Enable(void);
  * @param  None
  * @retval None
  */
+void EXTI0_IRQHandler(){
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
+}
 int main(void) {
 	/* This project template calls firstly two functions in order to configure MPU feature
 	 and to enable the CPU Cache, respectively MPU_Config() and CPU_CACHE_Enable().
@@ -101,9 +108,9 @@ int main(void) {
 
 	GPIO_InitTypeDef butt1;
 	butt1.Pin = GPIO_PIN_0;
-	butt1.Mode = GPIO_MODE_INPUT;
+	butt1.Mode = GPIO_MODE_IT_FALLING;
 	butt1.Pull = GPIO_PULLUP;
-	butt1.Speed = GPIO_SPEED_HIGH;
+	butt1.Speed = GPIO_SPEED_FAST;
 
 	HAL_GPIO_Init(GPIOA, &led1);
 	HAL_GPIO_Init(GPIOA, &butt1);
@@ -136,6 +143,8 @@ int main(void) {
 	BSP_COM_Init(COM1, &uart_handle);
 
 
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 0x0E, 0x00);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC interrupts WS**********\r\n\n");
@@ -145,7 +154,7 @@ int main(void) {
 
 	while (1) {
 
-		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0) {
+	/*	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0) {
 			++counter;
 			if (counter % 2 == 1) {
 				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
@@ -156,7 +165,7 @@ int main(void) {
 				counter = 0;
 
 			}
-		}
+		} */
 	}
 
 }
