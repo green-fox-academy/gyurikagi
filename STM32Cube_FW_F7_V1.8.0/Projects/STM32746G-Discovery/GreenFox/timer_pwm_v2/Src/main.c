@@ -120,14 +120,14 @@ int main(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   TimHandle.Instance               = TIM1;
-  TimHandle.Init.Period            = 3000;
+  TimHandle.Init.Period            = 5000;
   TimHandle.Init.Prescaler         = 2500;
   TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
   TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
 
 
   sConfig.OCMode       = TIM_OCMODE_PWM1;
-  sConfig.Pulse = 10;
+  sConfig.Pulse = 1000;
 
 
 

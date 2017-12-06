@@ -52,14 +52,10 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
-TIM_HandleTypeDef Timer2Handle;
-TIM_OC_InitTypeDef Timer2OCConfig;
-GPIO_InitTypeDef PWMPinConfig;
 
-//volatile int repetition = 5;
+volatile uint32_t timIntPeriod;
 
 /* Private function prototypes -----------------------------------------------*/
-
 
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
@@ -75,6 +71,7 @@ static void MPU_Config(void);
 static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
+
 /**
  * @brief  Main program
  * @param  None
@@ -104,42 +101,12 @@ int main(void) {
 	/* Configure the System clock to have a frequency of 216 MHz */
 	SystemClock_Config();
 
-	__HAL_RCC_GPIOA_CLK_ENABLE();
+	BSP_PB_Init(BUTTON_WAKEUP, BUTTON_MODE_EXTI);
 
-	PWMPinConfig.Alternate = GPIO_AF1_TIM2;
-	PWMPinConfig.Mode = GPIO_MODE_AF_PP;
-	PWMPinConfig.Pin = GPIO_PIN_15;
-	PWMPinConfig.Pull = GPIO_NOPULL;
-	PWMPinConfig.Speed = GPIO_SPEED_FAST;
-
-	HAL_GPIO_Init(GPIOA, &PWMPinConfig);
-
-	/*
-	 * Configure timer
+	/* Add your application code here
 	 */
-	__HAL_RCC_TIM2_CLK_ENABLE();
+	BSP_LED_Init(LED_GREEN);
 
-	Timer2Handle.Instance = TIM2;
-	Timer2Handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	Timer2Handle.Init.Period = 1646;
-	Timer2Handle.Init.Prescaler = 0xFFFF;
-	Timer2Handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	HAL_TIM_Base_Init(&Timer2Handle);
-	HAL_TIM_Base_Start_IT(&Timer2Handle);
-
-	HAL_TIM_PWM_Init(&Timer2Handle);
-
-	Timer2OCConfig.OCMode = TIM_OCMODE_PWM1;
-	Timer2OCConfig.Pulse = 823;
-	HAL_TIM_PWM_ConfigChannel(&Timer2Handle, &Timer2OCConfig, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start_IT(&Timer2Handle, TIM_CHANNEL_1);
-
-	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0f, 0x00);
-	HAL_NVIC_EnableIRQ(TIM2_IRQn);
-
-	/**
-	 * Configure UART
-	 */
 	uart_handle.Init.BaudRate = 115200;
 	uart_handle.Init.WordLength = UART_WORDLENGTH_8B;
 	uart_handle.Init.StopBits = UART_STOPBITS_1;
@@ -149,36 +116,13 @@ int main(void) {
 
 	BSP_COM_Init(COM1, &uart_handle);
 
+
 	printf("\n-----------------WELCOME-----------------\r\n");
-	printf("**********in STATIC practise day **********\r\n\n");
+	printf("**********in STATIC interrupts WS**********\r\n\n");
 
-	//int dirUp = 1;
-	while (1) {/*
-		if (TIM2->CCR1 == 1646) {
-			dirUp = 0;
-		}
-		if (TIM2->CCR1 == 100) {
-			dirUp = 1;
-		}
-		TIM2->CCR1 = dirUp ? (TIM2->CCR1 + 1) : (TIM2->CCR1 - 1);
-		HAL_Delay(1);*/
+
+	while (1) {
 	}
-}
-
-void TIM2_IRQHandler() {
-	HAL_TIM_IRQHandler(&Timer2Handle);
-}
-
-void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
-	/*repetition--;
-	if (repetition == 0) {
-		HAL_TIM_PWM_Stop_IT(&Timer2Handle, TIM_CHANNEL_1);
-	} */
-	printf("PWM pulse finished\r\n");
-}
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-	printf("Callback called!\r\n");
 }
 
 /**
