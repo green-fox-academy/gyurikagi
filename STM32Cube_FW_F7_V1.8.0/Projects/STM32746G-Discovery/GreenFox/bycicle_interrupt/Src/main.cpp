@@ -37,7 +37,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <string.h>
+
+volatile int counter = 0;
 
 /** @addtogroup STM32F7xx_HAL_Examples
  * @{
@@ -51,30 +52,97 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-UART_HandleTypeDef uart_handle;
-GPIO_InitTypeDef led;
-GPIO_InitTypeDef butt;
-TIM_HandleTypeDef Timhandle;
-TIM_HandleTypeDef Timhandle2;
-TIM_OC_InitTypeDef sConfig;
-
-
-volatile uint32_t timIntPeriod;
-
 /* Private function prototypes -----------------------------------------------*/
-
-#ifdef __GNUC__
-/* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
- set to 'Yes') calls __io_putchar() */
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
-
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 static void MPU_Config(void);
 static void CPU_CACHE_Enable(void);
+//unsigned int counter = 0;
+bool wasPushed = false;
+
+void My_Delay(uint32_t Delay) {
+	uint32_t tickstart = 0;
+	tickstart = HAL_GetTick();
+	while ((HAL_GetTick() - tickstart) < Delay) {
+		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0)
+			return;
+	}
+}
+
+void knight_flash_leds() {
+	uint16_t mask = 0b01000000;
+	for (int i = 0; i < 5; ++i) {
+		GPIOF->ODR = GPIOF->ODR | mask; // set the lowest bit to 1, leave the others as they are (this will set the lowest bit - PIN 0 - to 1)
+		My_Delay(10);
+		GPIOF->ODR = GPIOF->ODR & ~mask;
+		mask <<= 1;
+		My_Delay(10);
+	}
+}
+
+void knight_flash_leds_back() {
+	uint16_t mask = 0b0000010000000000;
+	for (int i = 0; i < 5; ++i) {
+		GPIOF->ODR = GPIOF->ODR | mask; // set the lowest bit to 1, leave the others as they are (this will set the lowest bit - PIN 0 - to 1)
+		My_Delay(10);
+		GPIOF->ODR = GPIOF->ODR & ~mask;
+		mask >>= 1;
+		My_Delay(10);
+	}
+}
+
+void turn_on_leds() {
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET); // setting the pin to 1
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_SET);  // setting the pin to 1
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_SET);  // setting the pin to 1
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_SET);  // setting the pin to 1
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);  // setting the pin to 1
+
+}
+
+void turn_off_leds() {
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET); // setting the pin to 0
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET); // setting the pin to 0
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET); // setting the pin to 0
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_RESET); // setting the pin to 0
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET); // setting the pin to 1
+
+}
+
+
+void flash_leds() {
+	bool prevState = true;
+	bool newState = true;
+	while (prevState || !newState) {
+		turn_on_leds();
+		HAL_Delay(70);
+		turn_off_leds();
+		HAL_Delay(70);
+		prevState = newState;
+		newState = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0;
+		counter = counter -1;
+	}
+}
+
+void rider_leds() {
+	bool prevState = true;
+	bool newState = true;
+	while (prevState || !newState) {
+		knight_flash_leds();
+		My_Delay(10);
+		prevState = newState;
+		newState = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0;
+		knight_flash_leds_back();
+		My_Delay(10);
+		prevState = newState;
+		newState = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0;
+
+	}
+
+}
+
+void EXTI0_IRQHandler();
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -83,18 +151,8 @@ static void CPU_CACHE_Enable(void);
  * @param  None
  * @retval None
  */
-
-void EXTI9_5_IRQHandler ();
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
-
-void TIM2_IRQHandler();
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
-
-void init_timehandle();
-
 int main(void) {
+
 	/* This project template calls firstly two functions in order to configure MPU feature
 	 and to enable the CPU Cache, respectively MPU_Config() and CPU_CACHE_Enable().
 	 These functions are provided as template implementation that User may integrate
@@ -117,126 +175,90 @@ int main(void) {
 
 	/* Configure the System clock to have a frequency of 216 MHz */
 	SystemClock_Config();
+	__HAL_RCC_GPIOA_CLK_ENABLE();	;
+	__HAL_RCC_GPIOF_CLK_ENABLE();	;
 
-	/* Add your application code here
-	 */
-	uart_handle.Init.BaudRate = 115200;
-	uart_handle.Init.WordLength = UART_WORDLENGTH_8B;
-	uart_handle.Init.StopBits = UART_STOPBITS_1;
-	uart_handle.Init.Parity = UART_PARITY_NONE;
-	uart_handle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-	uart_handle.Init.Mode = UART_MODE_TX_RX;
+	GPIO_InitTypeDef butt1;            // create a config structure
+	butt1.Pin = GPIO_PIN_0;            // this is about PIN 0
+	butt1.Mode = GPIO_MODE_IT_RISING; // Configure as output with push-up-down enabled
+	butt1.Pull = GPIO_NOPULL;        // the push-up-down should work as pulldown
+	butt1.Speed = GPIO_SPEED_FAST;     // we need a high-speed output
 
-	BSP_COM_Init(COM1, &uart_handle);
+	GPIO_InitTypeDef led1;            // create a config structure
+	led1.Pin = GPIO_PIN_10;            // this is about PIN 0
+	led1.Mode = GPIO_MODE_OUTPUT_PP; // Configure as output with push-up-down enabled
+	led1.Pull = GPIO_PULLDOWN;       // the push-up-down should work as pulldown
+	led1.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+	led1.Alternate = GPIO_AF1_TIM1;
 
-	init_timehandle();
+	GPIO_InitTypeDef led2;            // create a config structure
+	led2.Pin = GPIO_PIN_9;            // this is about PIN 0
+	led2.Mode = GPIO_MODE_OUTPUT_PP; // Configure as output with push-up-down enabled
+	led2.Pull = GPIO_PULLDOWN;       // the push-up-down should work as pulldown
+	led2.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+	led2.Alternate = GPIO_AF1_TIM1;
 
-	HAL_TIM_Base_Init(&Timhandle);
-	HAL_TIM_Base_Start_IT(&Timhandle);
+	GPIO_InitTypeDef led3;            // create a config structure
+	led3.Pin = GPIO_PIN_8;            // this is about PIN 0
+	led3.Mode = GPIO_MODE_OUTPUT_PP; // Configure as output with push-up-down enabled
+	led3.Pull = GPIO_PULLDOWN;       // the push-up-down should work as pulldown
+	led3.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+	led3.Alternate = GPIO_AF1_TIM1;
 
-	HAL_TIM_PWM_Init(&Timhandle);
+	GPIO_InitTypeDef led4;
+	led4.Pin = GPIO_PIN_7;
+	led4.Mode = GPIO_MODE_OUTPUT_PP;
+	led4.Pull = GPIO_PULLDOWN;
+	led4.Speed = GPIO_SPEED_HIGH;
+	led4.Alternate = GPIO_AF1_TIM1;
 
-	sConfig.OCMode = TIM_OCMODE_PWM1;
-	sConfig.Pulse = 0;
+	GPIO_InitTypeDef led5;
+	led5.Pin = GPIO_PIN_6;
+	led5.Mode = GPIO_MODE_OUTPUT_PP;
+	led5.Pull = GPIO_PULLDOWN;
+	led5.Speed = GPIO_SPEED_HIGH;
+	led5.Alternate = GPIO_AF1_TIM1;
 
-	HAL_TIM_PWM_ConfigChannel(&Timhandle, &sConfig, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start_IT(&Timhandle, TIM_CHANNEL_1);
+	HAL_GPIO_Init(GPIOA, &butt1);
+	HAL_GPIO_Init(GPIOF, &led1);
+	HAL_GPIO_Init(GPIOF, &led2);
+	HAL_GPIO_Init(GPIOF, &led3);
+	HAL_GPIO_Init(GPIOF, &led4);
+	HAL_GPIO_Init(GPIOF, &led5);
+	/* Add your application code here     */
 
-	__HAL_RCC_TIM2_CLK_ENABLE();
-
-	Timhandle2.Instance = TIM2;
-	Timhandle2.Init.Period = 1646;
-	Timhandle2.Init.Prescaler = (0xFFFF / 30);
-	Timhandle2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	Timhandle2.Init.CounterMode = TIM_COUNTERMODE_UP;
-
-	HAL_TIM_Base_Init(&Timhandle2);
-	HAL_TIM_Base_Start_IT(&Timhandle2);
-
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-
-	led.Pin = GPIO_PIN_8;
-	led.Alternate = GPIO_AF1_TIM1;
-	led.Mode = GPIO_MODE_AF_PP;
-	led.Pull = GPIO_NOPULL;
-	led.Speed = GPIO_SPEED_FAST;
-
-	HAL_GPIO_Init(GPIOA, &led);
-
-	butt.Pin = GPIO_PIN_0;
-	butt.Mode = GPIO_MODE_IT_RISING;
-	butt.Pull = GPIO_PULLUP;
-	butt.Speed = GPIO_SPEED_HIGH;
-
-	HAL_GPIO_Init(GPIOA, &butt);
-
-	HAL_NVIC_SetPriority(EXTI0_IRQn , 0x0F, 0x01);
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 0x0F, 0x00);
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
-	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0F, 0x01);
-	HAL_NVIC_EnableIRQ(TIM2_IRQn);
-
-
-
-	printf("\n-----------------WELCOME-----------------\r\n");
-	printf("**********in STATIC interrupts WS**********\r\n\n");
-
-
+	/* Infinite loop */
 	while (1) {
-	/* if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)==0)
-			 TIM1->CCR1 =1646; */
+	//	//if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 0)
+	//	//++counter;
+			if (counter % 3 == 1) {
+				turn_on_leds();
+			} else if (counter % 3 == 2) {
+				flash_leds();
+			} else if (counter % 3 == 0) {
+				turn_off_leds();
+				counter = 0;
+		//	} else if (counter % 4 == 0) {
+		//		rider_leds();
+
+			}
+			HAL_Delay(300);*/
+
+
 	}
 }
 
-void EXTI0_IRQHandler (){
+void EXTI0_IRQHandler(){
 	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
 }
 
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	if (TIM1->CCR1 < 1646 - 75) {
-			TIM1->CCR1 = TIM1->CCR1 + 75;
-		} else {
-			TIM1->CCR1 = 1646;
-		}
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	++counter;
 }
 
-void TIM2_IRQHandler() {
-	HAL_TIM_IRQHandler(&Timhandle2);
-}
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-	if (TIM1->CCR1 > 10) {
-		TIM1->CCR1 = TIM1->CCR1 - 10;
-	} else {
-		TIM1->CCR1 = 0;
-	}
-}
-
-
-void init_timehandle(){
-	__HAL_RCC_TIM1_CLK_ENABLE();
-
-		Timhandle.Instance = TIM1;
-		Timhandle.Init.Period = 1646;
-		Timhandle.Init.Prescaler = 1;
-		Timhandle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-		Timhandle.Init.CounterMode = TIM_COUNTERMODE_UP;
-
-}
-
-/**
- * @brief  Retargets the C library printf function to the USART.
- * @param  None
- * @retval None
- */
-PUTCHAR_PROTOTYPE {
-	/* Place your implementation of fputc here */
-	/* e.g. write a character to the EVAL_COM1 and Loop until the end of transmission */
-	HAL_UART_Transmit(&uart_handle, (uint8_t *) &ch, 1, 0xFFFF);
-
-	return ch;
-}
 
 /**
  * @brief  System Clock Configuration

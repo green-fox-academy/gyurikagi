@@ -46,20 +46,11 @@
 /** @addtogroup Templates
  * @{
  */
-
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
-GPIO_InitTypeDef led;
-GPIO_InitTypeDef butt;
-TIM_HandleTypeDef Timhandle;
-TIM_HandleTypeDef Timhandle2;
-TIM_OC_InitTypeDef sConfig;
-
-
-volatile uint32_t timIntPeriod;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -76,6 +67,37 @@ static void Error_Handler(void);
 static void MPU_Config(void);
 static void CPU_CACHE_Enable(void);
 
+void My_Delay(uint32_t Delay) {
+	uint32_t tickstart = 0;
+	tickstart = HAL_GetTick();
+	while ((HAL_GetTick() - tickstart) < Delay) {
+		if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10) == 0 || HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9) == 0)
+			return;
+	}
+}
+
+void starting_led() {
+	BSP_LED_On(LED_GREEN);
+	My_Delay(500);
+	BSP_LED_Off(LED_GREEN);
+	My_Delay(500);
+
+}
+
+/*void flash_leds() {
+	bool prevState = true;
+	bool newState = true;
+	while (prevState || !newState) {
+		BSP_LED_On(led0);
+		My_Delay(70);
+		BSP_led (led0);
+		HAL_Delay(70);
+		prevState = newState;
+		newState = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10) == 0;
+		counter = 0;
+	}
+}*/
+
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -83,18 +105,13 @@ static void CPU_CACHE_Enable(void);
  * @param  None
  * @retval None
  */
-
-void EXTI9_5_IRQHandler ();
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
-
-void TIM2_IRQHandler();
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
-
-void init_timehandle();
-
 int main(void) {
+
+	// init buttons and leds:
+
+
+
+
 	/* This project template calls firstly two functions in order to configure MPU feature
 	 and to enable the CPU Cache, respectively MPU_Config() and CPU_CACHE_Enable().
 	 These functions are provided as template implementation that User may integrate
@@ -115,11 +132,59 @@ int main(void) {
 	 */
 	HAL_Init();
 
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+
+	GPIO_InitTypeDef butt1;
+	butt1.Pin = GPIO_PIN_10;
+	butt1.Mode = GPIO_MODE_INPUT;
+	butt1.Pull = GPIO_PULLUP;
+	butt1.Speed = GPIO_SPEED_HIGH;
+
+	GPIO_InitTypeDef butt2;
+	butt2.Pin = GPIO_PIN_9;
+	butt2.Mode = GPIO_MODE_INPUT;
+	butt2.Pull = GPIO_PULLUP;
+	butt2.Speed = GPIO_SPEED_HIGH;
+
+	GPIO_InitTypeDef led0;
+	led0.Pin = GPIO_PIN_7;
+	led0.Mode = GPIO_MODE_OUTPUT_PP;
+	led0.Pull = GPIO_PULLDOWN;
+	led0.Speed = GPIO_SPEED_HIGH;
+
+	GPIO_InitTypeDef led1;
+	led1.Pin = GPIO_PIN_6;
+	led1.Mode = GPIO_MODE_OUTPUT_PP;
+	led1.Pull = GPIO_PULLDOWN;
+	led1.Speed = GPIO_SPEED_HIGH;
+
+	GPIO_InitTypeDef led2;
+	led2.Pin = GPIO_PIN_8;
+	led2.Mode = GPIO_MODE_OUTPUT_PP;
+	led2.Pull = GPIO_PULLDOWN;
+	led2.Speed = GPIO_SPEED_HIGH;
+
+	HAL_GPIO_Init(GPIOF, &led0);
+	HAL_GPIO_Init(GPIOF, &led1);
+	HAL_GPIO_Init(GPIOF, &led2);
+	HAL_GPIO_Init(GPIOF, &butt1);
+	HAL_GPIO_Init(GPIOF, &butt2);
+
 	/* Configure the System clock to have a frequency of 216 MHz */
 	SystemClock_Config();
+	RNG_HandleTypeDef rnd;
+	uint32_t rnd_num;
+	rnd.Instance = RNG;
+	HAL_RNG_Init(&rnd);
+	HAL_RNG_GenerateRandomNumber(&rnd, &rnd_num);
+	uint32_t rand_num = rnd_num % 10000 + 1;
 
 	/* Add your application code here
 	 */
+
+//	BSP_LED_Init(LED_GREEN);
+//	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
+
 	uart_handle.Init.BaudRate = 115200;
 	uart_handle.Init.WordLength = UART_WORDLENGTH_8B;
 	uart_handle.Init.StopBits = UART_STOPBITS_1;
@@ -129,100 +194,89 @@ int main(void) {
 
 	BSP_COM_Init(COM1, &uart_handle);
 
-	init_timehandle();
+	/* Output a message using printf function */
+	printf("\n------------------WELCOME------------------\r\n");
+	printf(
+			"**********in STATIC reaction game**********\r\n\
+		  \n Let's play a game! Are you ready?\n");
 
-	HAL_TIM_Base_Init(&Timhandle);
-	HAL_TIM_Base_Start_IT(&Timhandle);
-
-	HAL_TIM_PWM_Init(&Timhandle);
-
-	sConfig.OCMode = TIM_OCMODE_PWM1;
-	sConfig.Pulse = 0;
-
-	HAL_TIM_PWM_ConfigChannel(&Timhandle, &sConfig, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start_IT(&Timhandle, TIM_CHANNEL_1);
-
-	__HAL_RCC_TIM2_CLK_ENABLE();
-
-	Timhandle2.Instance = TIM2;
-	Timhandle2.Init.Period = 1646;
-	Timhandle2.Init.Prescaler = (0xFFFF / 30);
-	Timhandle2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	Timhandle2.Init.CounterMode = TIM_COUNTERMODE_UP;
-
-	HAL_TIM_Base_Init(&Timhandle2);
-	HAL_TIM_Base_Start_IT(&Timhandle2);
-
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-
-	led.Pin = GPIO_PIN_8;
-	led.Alternate = GPIO_AF1_TIM1;
-	led.Mode = GPIO_MODE_AF_PP;
-	led.Pull = GPIO_NOPULL;
-	led.Speed = GPIO_SPEED_FAST;
-
-	HAL_GPIO_Init(GPIOA, &led);
-
-	butt.Pin = GPIO_PIN_0;
-	butt.Mode = GPIO_MODE_IT_RISING;
-	butt.Pull = GPIO_PULLUP;
-	butt.Speed = GPIO_SPEED_HIGH;
-
-	HAL_GPIO_Init(GPIOA, &butt);
-
-	HAL_NVIC_SetPriority(EXTI0_IRQn , 0x0F, 0x01);
-	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-
-	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0F, 0x01);
-	HAL_NVIC_EnableIRQ(TIM2_IRQn);
-
-
-
-	printf("\n-----------------WELCOME-----------------\r\n");
-	printf("**********in STATIC interrupts WS**********\r\n\n");
-
+	uint32_t push_time;
+	uint32_t start_time;
+	uint32_t arr[2];
 
 	while (1) {
-	/* if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)==0)
-			 TIM1->CCR1 =1646; */
-	}
-}
+		while (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10) != 0 || HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)!= 0) {
+			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_SET);
+			My_Delay(500);
+			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_RESET);
+			My_Delay(500);
 
-void EXTI0_IRQHandler (){
-	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
-}
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	if (TIM1->CCR1 < 1646 - 75) {
-			TIM1->CCR1 = TIM1->CCR1 + 75;
-		} else {
-			TIM1->CCR1 = 1646;
 		}
-}
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_RESET);
+		while (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10) != 1 || HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)!= 1) {
 
-void TIM2_IRQHandler() {
-	HAL_TIM_IRQHandler(&Timhandle2);
-}
+		}
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-	if (TIM1->CCR1 > 10) {
-		TIM1->CCR1 = TIM1->CCR1 - 10;
-	} else {
-		TIM1->CCR1 = 0;
+		for (int i = 0; i< 10; ++i){
+				HAL_RNG_GenerateRandomNumber(&rnd, &rnd_num);
+				rand_num = rnd_num % 10000 + 1;
+				HAL_Delay(rand_num);
+				HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_SET);
+				start_time = HAL_GetTick();
+				HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_RESET);
+				if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_10)!=0){
+					HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+					HAL_Delay(10000);
+					HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+				} else if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_9)!=0) {
+					HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_SET);
+					HAL_Delay(10000);
+					HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET);
+				}
+
+		}
+
+
+
+
 	}
-}
+/*	for (int j = 0; j < 2; ++j) {
+		do {
+			starting_led();
+		} while (BSP_PB_GetState(BUTTON_KEY) == 0);
+
+		BSP_LED_Off(LED_GREEN);
+		while (BSP_PB_GetState(BUTTON_KEY) == 1) {
+
+		}
+
+		uint32_t avg_time = 0;
+		for (int i = 0; i < 5; ++i) {
+			HAL_RNG_GenerateRandomNumber(&rnd, &rnd_num);
+			rand_num = rnd_num % 10000 + 1;
+			HAL_Delay(rand_num);
+			BSP_LED_On(LED_GREEN);
+			start_time = HAL_GetTick();
+			My_Delay(10000);
+			push_time = HAL_GetTick();
+			printf("Your time is %d msec.\n", (push_time - start_time));
+			BSP_LED_Off(LED_GREEN);
+			avg_time = avg_time + (push_time - start_time);
+		}
+		printf("Your average is: %d\n", avg_time / 5);
+		arr[j] = avg_time;
+		avg_time = 0;
+
+		printf("Next player\n");
+		HAL_Delay(200);
 
 
-void init_timehandle(){
-	__HAL_RCC_TIM1_CLK_ENABLE();
-
-		Timhandle.Instance = TIM1;
-		Timhandle.Init.Period = 1646;
-		Timhandle.Init.Prescaler = 1;
-		Timhandle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-		Timhandle.Init.CounterMode = TIM_COUNTERMODE_UP;
-
+	}
+	if (arr[0] < arr[1]) {
+		printf("The winner is the first player\n");
+	} else {
+		printf("The winner is the second player\n");
+	}*/
 }
 
 /**

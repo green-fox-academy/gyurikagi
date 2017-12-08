@@ -52,12 +52,12 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
-GPIO_InitTypeDef led;
-GPIO_InitTypeDef butt;
-TIM_HandleTypeDef Timhandle;
-TIM_HandleTypeDef Timhandle2;
-TIM_OC_InitTypeDef sConfig;
-
+GPIO_InitTypeDef pb_up;
+GPIO_InitTypeDef pb_down;
+GPIO_InitTypeDef feedback;
+GPIO_InitTypeDef gate;
+TIM_HandleTypeDef timh;
+TIM_OC_InitTypeDef output_compare_conf;
 
 volatile uint32_t timIntPeriod;
 
@@ -84,15 +84,15 @@ static void CPU_CACHE_Enable(void);
  * @retval None
  */
 
-void EXTI9_5_IRQHandler ();
+void init_buttons ();
+void init_feedback();
+void Tim1_init_start();
+void EXTI9_5_IRQHandler();
+void EXTI15_10_IRQHandler();
+void int_gate();
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 
-void TIM2_IRQHandler();
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
-
-void init_timehandle();
 
 int main(void) {
 	/* This project template calls firstly two functions in order to configure MPU feature
@@ -118,8 +118,22 @@ int main(void) {
 	/* Configure the System clock to have a frequency of 216 MHz */
 	SystemClock_Config();
 
+	init_buttons ();
+	init_feedback();
+	Tim1_init_start();
+	int_gate();
+
+	BSP_LED_Init(LED_GREEN);
+
+	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
+	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 1);
+	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
 	/* Add your application code here
 	 */
+
 	uart_handle.Init.BaudRate = 115200;
 	uart_handle.Init.WordLength = UART_WORDLENGTH_8B;
 	uart_handle.Init.StopBits = UART_STOPBITS_1;
@@ -129,100 +143,14 @@ int main(void) {
 
 	BSP_COM_Init(COM1, &uart_handle);
 
-	init_timehandle();
-
-	HAL_TIM_Base_Init(&Timhandle);
-	HAL_TIM_Base_Start_IT(&Timhandle);
-
-	HAL_TIM_PWM_Init(&Timhandle);
-
-	sConfig.OCMode = TIM_OCMODE_PWM1;
-	sConfig.Pulse = 0;
-
-	HAL_TIM_PWM_ConfigChannel(&Timhandle, &sConfig, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start_IT(&Timhandle, TIM_CHANNEL_1);
-
-	__HAL_RCC_TIM2_CLK_ENABLE();
-
-	Timhandle2.Instance = TIM2;
-	Timhandle2.Init.Period = 1646;
-	Timhandle2.Init.Prescaler = (0xFFFF / 30);
-	Timhandle2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	Timhandle2.Init.CounterMode = TIM_COUNTERMODE_UP;
-
-	HAL_TIM_Base_Init(&Timhandle2);
-	HAL_TIM_Base_Start_IT(&Timhandle2);
-
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-
-	led.Pin = GPIO_PIN_8;
-	led.Alternate = GPIO_AF1_TIM1;
-	led.Mode = GPIO_MODE_AF_PP;
-	led.Pull = GPIO_NOPULL;
-	led.Speed = GPIO_SPEED_FAST;
-
-	HAL_GPIO_Init(GPIOA, &led);
-
-	butt.Pin = GPIO_PIN_0;
-	butt.Mode = GPIO_MODE_IT_RISING;
-	butt.Pull = GPIO_PULLUP;
-	butt.Speed = GPIO_SPEED_HIGH;
-
-	HAL_GPIO_Init(GPIOA, &butt);
-
-	HAL_NVIC_SetPriority(EXTI0_IRQn , 0x0F, 0x01);
-	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-
-	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0F, 0x01);
-	HAL_NVIC_EnableIRQ(TIM2_IRQn);
-
-
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC interrupts WS**********\r\n\n");
 
 
 	while (1) {
-	/* if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)==0)
-			 TIM1->CCR1 =1646; */
+
 	}
-}
-
-void EXTI0_IRQHandler (){
-	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
-}
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	if (TIM1->CCR1 < 1646 - 75) {
-			TIM1->CCR1 = TIM1->CCR1 + 75;
-		} else {
-			TIM1->CCR1 = 1646;
-		}
-}
-
-void TIM2_IRQHandler() {
-	HAL_TIM_IRQHandler(&Timhandle2);
-}
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-	if (TIM1->CCR1 > 10) {
-		TIM1->CCR1 = TIM1->CCR1 - 10;
-	} else {
-		TIM1->CCR1 = 0;
-	}
-}
-
-
-void init_timehandle(){
-	__HAL_RCC_TIM1_CLK_ENABLE();
-
-		Timhandle.Instance = TIM1;
-		Timhandle.Init.Period = 1646;
-		Timhandle.Init.Prescaler = 1;
-		Timhandle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-		Timhandle.Init.CounterMode = TIM_COUNTERMODE_UP;
-
 }
 
 /**
@@ -293,6 +221,99 @@ static void SystemClock_Config(void) {
 		Error_Handler();
 	}
 }
+
+
+void init_buttons (){
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+
+	pb_down.Pin = GPIO_PIN_9;
+	pb_down.Mode = GPIO_MODE_IT_RISING;
+	pb_down.Pull = GPIO_PULLDOWN;
+	pb_down.Speed = GPIO_SPEED_FAST;
+
+	HAL_GPIO_Init(GPIOF, &pb_down);
+
+
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+	pb_up.Pin = GPIO_PIN_10;
+	pb_up.Mode = GPIO_MODE_IT_RISING;
+	pb_up.Pull = GPIO_PULLDOWN;
+	pb_up.Speed = GPIO_SPEED_FAST;
+
+	HAL_GPIO_Init(GPIOF, &pb_up);
+}
+
+
+void init_feedback() {
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	 feedback.Pin = GPIO_PIN_0;
+	 feedback.Mode = GPIO_MODE_IT_RISING;
+	 feedback.Pull = GPIO_NOPULL;
+	 feedback.Speed = GPIO_SPEED_FAST;
+	 HAL_GPIO_Init(GPIOA, &feedback);
+
+}
+
+void Tim1_init_start(){
+	__HAL_RCC_TIM1_CLK_ENABLE();
+	timh.Instance               = TIM1;
+	timh.Init.Period            = 1000;
+	timh.Init.Prescaler         = 50000;
+	timh.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	timh.Init.CounterMode       = TIM_COUNTERMODE_UP;
+
+	HAL_TIM_Base_Init(&timh);
+
+	HAL_TIM_Base_Start(&timh);
+
+	HAL_TIM_PWM_Init(&timh);
+
+	output_compare_conf.OCMode = TIM_OCMODE_PWM1;
+	output_compare_conf.Pulse = 0;
+
+	HAL_TIM_PWM_ConfigChannel(&timh, &output_compare_conf, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&timh, TIM_CHANNEL_1);
+
+}
+
+// button interrupt
+
+void EXTI9_5_IRQHandler()
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_9);
+}
+
+void EXTI15_10_IRQHandler()
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
+
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+ if (GPIO_Pin == GPIO_PIN_10 && TIM1->CCR1 <= 900) {
+	 TIM1->CCR1 +=100 ;
+	 printf("%lu\n", TIM1->CCR1);
+ } else if (GPIO_Pin == GPIO_PIN_9  && TIM1->CCR1 >= 100) {
+	 TIM1->CCR1 -=100;
+	 printf("%lu\n", TIM1->CCR1);
+ }
+}
+
+void int_gate(){
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+
+	 gate.Pin = GPIO_PIN_8;
+	 gate.Mode = GPIO_MODE_AF_PP;
+	 gate.Pull = GPIO_PULLDOWN;
+	 gate.Speed = GPIO_SPEED_FAST;
+	 gate.Alternate = GPIO_AF1_TIM1;
+
+	HAL_GPIO_Init(GPIOA, &gate);
+}
+
+
+
 
 /**
  * @brief  This function is executed in case of error occurrence.
