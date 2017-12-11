@@ -84,14 +84,15 @@ static void CPU_CACHE_Enable(void);
 void init_usart(UART_HandleTypeDef *huart){
 	// init USART
 	__HAL_RCC_GPIOB_CLK_ENABLE();
+	 __HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_USART1_CLK_ENABLE();
 
-  GPIOTxConfig.Pin = GPIO_PIN_6;
+  GPIOTxConfig.Pin = GPIO_PIN_9;
   GPIOTxConfig.Mode = GPIO_MODE_AF_PP;
   GPIOTxConfig.Speed = GPIO_SPEED_FAST;
   GPIOTxConfig.Pull = GPIO_PULLUP;
   GPIOTxConfig.Alternate = GPIO_AF7_USART1;
-  HAL_GPIO_Init(GPIOB, &GPIOTxConfig);
+  HAL_GPIO_Init(GPIOA, &GPIOTxConfig);
 
   GPIORxConfig.Pin =  GPIO_PIN_7;
   GPIORxConfig.Mode = GPIO_MODE_AF_PP;
@@ -184,7 +185,7 @@ int main(void) {
 	uart_handle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
 	uart_handle.Init.Mode = UART_MODE_TX_RX;
 
-	BSP_COM_Init(COM1, &uart_handle);
+	//BSP_COM_Init(COM1, &uart_handle);
 
 	init_usart(&uart_handle);
 
@@ -199,6 +200,17 @@ int main(void) {
 
 	while (1) {
 		read_input(input);
+		if (strcmp(input,"on\n") == 0){
+			BSP_LED_On(LED_GREEN);
+		}else if (strcmp(input, "off\n") == 0) {
+			BSP_LED_Off(LED_GREEN);
+		} else {
+			for (unsigned int j = 0; j < 6; j++) {
+				HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
+				HAL_Delay(100);
+			}
+
+		}
 
 		write_input(input);
 		input[0] = '\0';
