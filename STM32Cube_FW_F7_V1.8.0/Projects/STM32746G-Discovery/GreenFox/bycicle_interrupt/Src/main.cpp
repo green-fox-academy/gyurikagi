@@ -180,8 +180,8 @@ int main(void) {
 
 	GPIO_InitTypeDef butt1;            // create a config structure
 	butt1.Pin = GPIO_PIN_0;            // this is about PIN 0
-	butt1.Mode = GPIO_MODE_IT_RISING; // Configure as output with push-up-down enabled
-	butt1.Pull = GPIO_NOPULL;        // the push-up-down should work as pulldown
+	butt1.Mode = GPIO_MODE_IT_RISING;
+	butt1.Pull = GPIO_PULLUP;        // the push-up-down should work as pulldown
 	butt1.Speed = GPIO_SPEED_FAST;     // we need a high-speed output
 
 	GPIO_InitTypeDef led1;            // create a config structure
@@ -189,35 +189,35 @@ int main(void) {
 	led1.Mode = GPIO_MODE_OUTPUT_PP; // Configure as output with push-up-down enabled
 	led1.Pull = GPIO_PULLDOWN;       // the push-up-down should work as pulldown
 	led1.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
-	led1.Alternate = GPIO_AF1_TIM1;
+	//led1.Alternate = GPIO_AF1_TIM1;
 
 	GPIO_InitTypeDef led2;            // create a config structure
 	led2.Pin = GPIO_PIN_9;            // this is about PIN 0
 	led2.Mode = GPIO_MODE_OUTPUT_PP; // Configure as output with push-up-down enabled
 	led2.Pull = GPIO_PULLDOWN;       // the push-up-down should work as pulldown
 	led2.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
-	led2.Alternate = GPIO_AF1_TIM1;
+	//led2.Alternate = GPIO_AF1_TIM1;
 
 	GPIO_InitTypeDef led3;            // create a config structure
 	led3.Pin = GPIO_PIN_8;            // this is about PIN 0
 	led3.Mode = GPIO_MODE_OUTPUT_PP; // Configure as output with push-up-down enabled
 	led3.Pull = GPIO_PULLDOWN;       // the push-up-down should work as pulldown
 	led3.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
-	led3.Alternate = GPIO_AF1_TIM1;
+	//led3.Alternate = GPIO_AF1_TIM1;
 
 	GPIO_InitTypeDef led4;
 	led4.Pin = GPIO_PIN_7;
 	led4.Mode = GPIO_MODE_OUTPUT_PP;
 	led4.Pull = GPIO_PULLDOWN;
 	led4.Speed = GPIO_SPEED_HIGH;
-	led4.Alternate = GPIO_AF1_TIM1;
+	//led4.Alternate = GPIO_AF1_TIM1;
 
 	GPIO_InitTypeDef led5;
 	led5.Pin = GPIO_PIN_6;
 	led5.Mode = GPIO_MODE_OUTPUT_PP;
 	led5.Pull = GPIO_PULLDOWN;
 	led5.Speed = GPIO_SPEED_HIGH;
-	led5.Alternate = GPIO_AF1_TIM1;
+	//led5.Alternate = GPIO_AF1_TIM1;
 
 	HAL_GPIO_Init(GPIOA, &butt1);
 	HAL_GPIO_Init(GPIOF, &led1);
@@ -229,6 +229,8 @@ int main(void) {
 
 	HAL_NVIC_SetPriority(EXTI0_IRQn, 0x0F, 0x00);
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+	BSP_LED_Init(LED_GREEN);
 
 	/* Infinite loop */
 	while (1) {
@@ -245,7 +247,7 @@ int main(void) {
 		//		rider_leds();
 
 			}
-			HAL_Delay(300);*/
+			HAL_Delay(300);
 
 
 	}
@@ -256,6 +258,7 @@ void EXTI0_IRQHandler(){
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	BSP_LED_Toggle(LED_GREEN);
 	++counter;
 }
 

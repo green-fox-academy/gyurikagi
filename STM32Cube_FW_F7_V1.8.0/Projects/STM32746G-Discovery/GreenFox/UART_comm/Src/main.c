@@ -52,14 +52,9 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
-GPIO_InitTypeDef pb_up;
-GPIO_InitTypeDef pb_down;
-GPIO_InitTypeDef feedback;
-GPIO_InitTypeDef gate;
-TIM_HandleTypeDef timh;
-TIM_OC_InitTypeDef output_compare_conf;
-TIM_HandleTypeDef Tim2;
-TIM_IC_InitTypeDef sICConfig;
+
+GPIO_InitTypeDef GPIOTxConfig;
+GPIO_InitTypeDef GPIORxConfig;
 
 volatile uint32_t timIntPeriod;
 
@@ -86,16 +81,35 @@ static void CPU_CACHE_Enable(void);
  * @retval None
  */
 
-void init_buttons ();
-void init_feedback();
-void Tim1_init_start();
-void EXTI9_5_IRQHandler();
-void EXTI15_10_IRQHandler();
-void int_gate();
-void Tim2_init_start();
+void init_usart(UART_HandleTypeDef *huart){
+	// init USART
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_USART1_CLK_ENABLE();
+	/*
+	 *  DISCOVERY_COMx_CLK_ENABLE(COM);
 
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+  /* Configure USART Tx as alternate function */
 
+
+  GPIOTxConfig.Pin = GPIO_PIN_6;
+  GPIOTxConfig.Mode = GPIO_MODE_AF_PP;
+  GPIOTxConfig.Speed = GPIO_SPEED_FAST;
+  GPIOTxConfig.Pull = GPIO_PULLUP;
+  GPIOTxConfig.Alternate = GPIO_AF7_USART1;
+  HAL_GPIO_Init(GPIOB, &GPIOTxConfig);
+
+  /* Configure USART Rx as alternate function */
+
+  GPIORxConfig.Pin =  GPIO_PIN_7;
+  GPIORxConfig.Mode = GPIO_MODE_AF_PP;
+  GPIORxConfig.Alternate = GPIO_AF7_USART1;
+  HAL_GPIO_Init(GPIOB, &GPIORxConfig);
+
+  /* USART configuration */
+  huart->Instance = USART1;
+  HAL_UART_Init(huart);
+
+}
 
 int main(void) {
 	/* This project template calls firstly two functions in order to configure MPU feature
@@ -109,6 +123,25 @@ int main(void) {
 
 	/* Enable the CPU Cache */
 	CPU_CACHE_Enable();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+
+	GPIO_InitTypeDef led1;
+
+	led1.Pin = GPIO_PIN_8;
+	led1.Mode = GPIO_MODE_OUTPUT_PP;
+	led1.Pull = GPIO_PULLDOWN;
+	led1.Speed = GPIO_SPEED_HIGH;
+
+	GPIO_InitTypeDef butt1;
+	butt1.Pin = GPIO_PIN_0;
+	butt1.Mode = GPIO_MODE_INPUT;
+	butt1.Pull = GPIO_PULLUP;
+	butt1.Speed = GPIO_SPEED_HIGH;
+
+	HAL_GPIO_Init(GPIOA, &led1);
+	HAL_GPIO_Init(GPIOA, &butt1);
+
 
 	/* STM32F7xx HAL library initialization:
 	 - Configure the Flash ART accelerator on ITCM interface
@@ -121,21 +154,13 @@ int main(void) {
 	/* Configure the System clock to have a frequency of 216 MHz */
 	SystemClock_Config();
 
-	init_buttons ();
-	init_feedback();
-	Tim1_init_start();
-	int_gate();
-
-	BSP_LED_Init(LED_GREEN);
-
-	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x00);
-	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
-	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 1);
-	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	BSP_PB_Init(BUTTON_WAKEUP, BUTTON_MODE_EXTI);
 
 	/* Add your application code here
 	 */
+	BSP_LED_Init(LED_GREEN);
+
+
 
 	uart_handle.Init.BaudRate = 115200;
 	uart_handle.Init.WordLength = UART_WORDLENGTH_8B;
@@ -146,14 +171,19 @@ int main(void) {
 
 	BSP_COM_Init(COM1, &uart_handle);
 
+	init_usart(&uart_handle);
+
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC interrupts WS**********\r\n\n");
 
 
+	int counter = 0;
+
 	while (1) {
 
 	}
+
 }
 
 /**
@@ -224,130 +254,6 @@ static void SystemClock_Config(void) {
 		Error_Handler();
 	}
 }
-
-
-void init_buttons (){
-	__HAL_RCC_GPIOF_CLK_ENABLE();
-
-	pb_down.Pin = GPIO_PIN_9;
-	pb_down.Mode = GPIO_MODE_IT_RISING;
-	pb_down.Pull = GPIO_PULLDOWN;
-	pb_down.Speed = GPIO_SPEED_FAST;
-
-	HAL_GPIO_Init(GPIOF, &pb_down);
-
-
-	__HAL_RCC_GPIOF_CLK_ENABLE();
-	pb_up.Pin = GPIO_PIN_10;
-	pb_up.Mode = GPIO_MODE_IT_RISING;
-	pb_up.Pull = GPIO_PULLDOWN;
-	pb_up.Speed = GPIO_SPEED_FAST;
-
-	HAL_GPIO_Init(GPIOF, &pb_up);
-}
-
-
-void init_feedback() {
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	 feedback.Pin = GPIO_PIN_15;
-	 feedback.Mode = GPIO_MODE_IT_RISING;
-	 feedback.Pull = GPIO_NOPULL;
-	 feedback.Speed = GPIO_SPEED_FAST;
-	 HAL_GPIO_Init(GPIOA, &feedback);
-
-}
-
-void Tim1_init_start(){
-	__HAL_RCC_TIM1_CLK_ENABLE();
-	timh.Instance               = TIM1;
-	timh.Init.Period            = 1000;
-	timh.Init.Prescaler         = 50000;
-	timh.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
-	timh.Init.CounterMode       = TIM_COUNTERMODE_UP;
-
-	HAL_TIM_Base_Init(&timh);
-
-	HAL_TIM_Base_Start(&timh);
-
-	HAL_TIM_PWM_Init(&timh);
-
-	output_compare_conf.OCMode = TIM_OCMODE_PWM1;
-	output_compare_conf.Pulse = 0;
-
-	HAL_TIM_PWM_ConfigChannel(&timh, &output_compare_conf, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&timh, TIM_CHANNEL_1);
-
-}
-
-void Tim2_init_start()
-{	__HAL_RCC_TIM2_CLK_ENABLE();
-	Tim2.Instance = TIM2;
-
-	  Tim2.Init.Period            = 0xFFFF;
-	  Tim2.Init.Prescaler         = 0;
-	  Tim2.Init.ClockDivision     = 0;
-	  Tim2.Init.CounterMode       = TIM_COUNTERMODE_UP;
-	  Tim2.Init.RepetitionCounter = 0;
-	  Tim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-	  if(HAL_TIM_IC_Init(&Tim2) != HAL_OK)
-	  {
-	  	    Error_Handler();
-	  }
-	  sICConfig.ICPolarity  = TIM_ICPOLARITY_RISING;
-	  sICConfig.ICSelection = TIM_ICSELECTION_DIRECTTI;
-	  sICConfig.ICPrescaler = TIM_ICPSC_DIV1;
-	  sICConfig.ICFilter    = 0;
-	  if(HAL_TIM_IC_ConfigChannel(&Tim2, &sICConfig, TIM_CHANNEL_1) != HAL_OK);
-}
-
-// button interrupt
-
-void EXTI9_5_IRQHandler()
-{
-	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_9);
-}
-
-void EXTI15_10_IRQHandler()
-{
-	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
-
-}
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
- if (GPIO_Pin == GPIO_PIN_10 && TIM1->CCR1 <= 900) {
-	 TIM1->CCR1 +=100 ;
-	 printf("%lu\n", TIM1->CCR1);
- } else if (GPIO_Pin == GPIO_PIN_9  && TIM1->CCR1 >= 100) {
-	 TIM1->CCR1 -=100;
-	 printf("%lu\n", TIM1->CCR1);
- }
-}
-
-void int_gate(){
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-
-	 gate.Pin = GPIO_PIN_8;
-	 gate.Mode = GPIO_MODE_AF_PP;
-	 gate.Pull = GPIO_PULLDOWN;
-	 gate.Speed = GPIO_SPEED_FAST;
-	 gate.Alternate = GPIO_AF1_TIM1;
-
-	HAL_GPIO_Init(GPIOA, &gate);
-}
-
-void TIM2_IRQHandler()
-{
-	
-	HAL_TIM_IRQHandler(GPIO_PIN_15);
-}
-
-void HAL_TIM_IC_CaptureCallback(htim)
-{
-	
-}
-
-
 
 /**
  * @brief  This function is executed in case of error occurrence.
