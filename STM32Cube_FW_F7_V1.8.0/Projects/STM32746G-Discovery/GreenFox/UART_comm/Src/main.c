@@ -85,11 +85,6 @@ void init_usart(UART_HandleTypeDef *huart){
 	// init USART
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_USART1_CLK_ENABLE();
-	/*
-	 *  DISCOVERY_COMx_CLK_ENABLE(COM);
-
-  /* Configure USART Tx as alternate function */
-
 
   GPIOTxConfig.Pin = GPIO_PIN_6;
   GPIOTxConfig.Mode = GPIO_MODE_AF_PP;
@@ -98,16 +93,36 @@ void init_usart(UART_HandleTypeDef *huart){
   GPIOTxConfig.Alternate = GPIO_AF7_USART1;
   HAL_GPIO_Init(GPIOB, &GPIOTxConfig);
 
-  /* Configure USART Rx as alternate function */
-
   GPIORxConfig.Pin =  GPIO_PIN_7;
   GPIORxConfig.Mode = GPIO_MODE_AF_PP;
   GPIORxConfig.Alternate = GPIO_AF7_USART1;
   HAL_GPIO_Init(GPIOB, &GPIORxConfig);
 
-  /* USART configuration */
   huart->Instance = USART1;
   HAL_UART_Init(huart);
+
+}
+
+void read_input(char *line){
+	uint32_t size = 0;
+	line[0] = '\0';
+
+	do {
+		HAL_UART_Receive(&uart_handle, &line[size], 1, HAL_MAX_DELAY );
+		size++;
+	} while (line[size-1] != '\n');
+
+	line[size] = '\0';
+
+}
+
+void write_input (char *line) {
+	unsigned int i = 0;
+	while (line[i] != '\0') {
+		HAL_UART_Transmit(&uart_handle, &line[i], 1, HAL_MAX_DELAY);
+		i++;
+	}
+
 
 }
 
@@ -175,13 +190,18 @@ int main(void) {
 
 
 	printf("\n-----------------WELCOME-----------------\r\n");
-	printf("**********in STATIC interrupts WS**********\r\n\n");
+	printf("**********in STATIC UART WS**********\r\n\n");
+
+	char input[100];
 
 
-	int counter = 0;
+
 
 	while (1) {
+		read_input(input);
 
+		write_input(input);
+		input[0] = '\0';
 	}
 
 }
