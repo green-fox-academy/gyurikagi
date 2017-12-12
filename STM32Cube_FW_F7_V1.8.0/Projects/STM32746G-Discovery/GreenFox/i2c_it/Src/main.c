@@ -56,8 +56,12 @@ UART_HandleTypeDef uart_handle;
 
 GPIO_InitTypeDef GPIOTxConfig;
 I2C_HandleTypeDef I2cHandle;
+TIM_HandleTypeDef TimHandle;
+TIM_OC_InitTypeDef sConfig;
 
 volatile uint32_t timIntPeriod;
+volatile uint8_t tr_databuff = 0x0;
+volatile uint8_t re_databuff = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -103,6 +107,13 @@ void I2C_Init(){
 	HAL_I2C_Init(&I2cHandle);
 
 }
+
+
+
+
+
+
+
 int main(void) {
 	/* This project template calls firstly two functions in order to configure MPU feature
 	 and to enable the CPU Cache, respectively MPU_Config() and CPU_CACHE_Enable().
@@ -166,6 +177,13 @@ int main(void) {
 
 	I2C_Init();
 
+	HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+
+
+
+
+
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC I2S WS**********\r\n\n");
 
@@ -176,11 +194,16 @@ int main(void) {
 	uint8_t re_databuff = 0;
 
 	while (1) {
-		HAL_I2C_Master_Transmit( &I2cHandle, 0b10010000, &tr_databuff, 1, 0xFFFF);
-		HAL_I2C_Master_Receive( &I2cHandle, 0b10010000, &re_databuff, 1, 0xFFFF);
-		printf("%i\n", re_databuff);
+
+		HAL_I2C_Master_Transmit_IT(&I2cHandle, 0b1001000<<1, &tr_databuff, 1);
 		HAL_Delay(1000);
+		/*HAL_I2C_Master_Transmit( &I2cHandle, 0b1001000<<1, &tr_databuff, 1, 0xFFFF);
+		HAL_I2C_Master_Receive( &I2cHandle, 0b1001000<<1, &re_databuff, 1, 0xFFFF);
+		printf("%i\n", re_databuff);
+		*/
+		//HAL_I2C_Master_Transmit_IT()
 	}
+
 
 }
 
@@ -195,6 +218,20 @@ PUTCHAR_PROTOTYPE {
 	HAL_UART_Transmit(&uart_handle, (uint8_t *) &ch, 1, 0xFFFF);
 
 	return ch;
+}
+
+
+
+void I2C1_EV_IRQHandler() {
+	HAL_I2C_EV_IRQHandler(&I2cHandle);
+}
+
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
+	HAL_I2C_Master_Receive_IT(&I2cHandle, (0b1001000<<1), &re_databuff, 1);
+}
+
+void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
+	printf("The current temperature is: %u\n", re_databuff);
 }
 
 /**
