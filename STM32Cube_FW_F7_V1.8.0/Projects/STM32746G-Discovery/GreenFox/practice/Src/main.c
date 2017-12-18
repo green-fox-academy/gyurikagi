@@ -56,12 +56,11 @@ UART_HandleTypeDef uart_handle;
 
 GPIO_InitTypeDef GPIOTxConfig;
 I2C_HandleTypeDef I2cHandle;
-TIM_HandleTypeDef TimHandle;
-TIM_OC_InitTypeDef sConfig;
+
+GPIO_InitTypeDef led;
+GPIO_InitTypeDef butt;
 
 volatile uint32_t timIntPeriod;
-volatile uint8_t tr_databuff = 0x0;
-volatile uint8_t re_databuff = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -86,7 +85,7 @@ static void CPU_CACHE_Enable(void);
  * @retval None
  */
 
-
+/*
 void I2C_Init(){
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_I2C1_CLK_ENABLE();
@@ -105,14 +104,32 @@ void I2C_Init(){
 	I2cHandle.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
 
 	HAL_I2C_Init(&I2cHandle);
+} */
+
+void init_led(){
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+
+	led.Pin = GPIO_PIN_8;
+	led.Mode = GPIO_MODE_OUTPUT_PP;
+	led.Pull = GPIO_PULLDOWN;
+	//led.Alternate = GPIO_AF1_TIM1;
+	led.Speed = GPIO_SPEED_FAST;
+
+	HAL_GPIO_Init(GPIOA, &led);
 
 }
 
+void init_bt_on_board(){
+	__HAL_RCC_GPIOI_CLK_ENABLE();
 
+	butt.Mode = GPIO_MODE_IT_RISING;
+	butt.Pin = GPIO_PIN_11;
+	butt.Pull = GPIO_NOPULL;
+	butt.Speed = GPIO_SPEED_FAST;
 
+	HAL_GPIO_Init(GPIOI, &butt);
 
-
-
+}
 
 int main(void) {
 	/* This project template calls firstly two functions in order to configure MPU feature
@@ -126,24 +143,9 @@ int main(void) {
 
 	/* Enable the CPU Cache */
 	CPU_CACHE_Enable();
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	__HAL_RCC_GPIOF_CLK_ENABLE();
 
-	GPIO_InitTypeDef led1;
-
-	led1.Pin = GPIO_PIN_8;
-	led1.Mode = GPIO_MODE_OUTPUT_PP;
-	led1.Pull = GPIO_PULLDOWN;
-	led1.Speed = GPIO_SPEED_HIGH;
-
-	GPIO_InitTypeDef butt1;
-	butt1.Pin = GPIO_PIN_0;
-	butt1.Mode = GPIO_MODE_INPUT;
-	butt1.Pull = GPIO_PULLUP;
-	butt1.Speed = GPIO_SPEED_HIGH;
-
-	HAL_GPIO_Init(GPIOA, &led1);
-	HAL_GPIO_Init(GPIOA, &butt1);
+	init_led();
+	init_bt_on_board();
 
 
 	/* STM32F7xx HAL library initialization:
@@ -163,6 +165,8 @@ int main(void) {
 	 */
 	BSP_LED_Init(LED_GREEN);
 
+
+
 	uart_handle.Init.BaudRate = 115200;
 	uart_handle.Init.WordLength = UART_WORDLENGTH_8B;
 	uart_handle.Init.StopBits = UART_STOPBITS_1;
@@ -173,28 +177,21 @@ int main(void) {
 	BSP_COM_Init(COM1, &uart_handle);
 
 
-	I2C_Init();
-
-	HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0x0F, 0x00);
-	HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
-
-
 	printf("\n-----------------WELCOME-----------------\r\n");
-	printf("**********in STATIC I2S WS**********\r\n\n");
+	printf("**********in STATIC Practice**********\r\n\n");
 
-	uint8_t tr_databuff = 0x0;
-	uint8_t re_databuff = 0;
+
 
 	while (1) {
+		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
+		HAL_Delay(100);
+		printf("bye");
+		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
+		HAL_Delay(100);
 
-		HAL_I2C_Master_Transmit_IT(&I2cHandle, 0b1001000<<1, &tr_databuff, 1);
-		HAL_Delay(1000);
-		/*HAL_I2C_Master_Transmit( &I2cHandle, 0b1001000<<1, &tr_databuff, 1, 0xFFFF);
-		HAL_I2C_Master_Receive( &I2cHandle, 0b1001000<<1, &re_databuff, 1, 0xFFFF);
-		printf("%i\n", re_databuff);
-		*/
-		//HAL_I2C_Master_Transmit_IT()
+
 	}
+
 }
 
 /**
@@ -208,20 +205,6 @@ PUTCHAR_PROTOTYPE {
 	HAL_UART_Transmit(&uart_handle, (uint8_t *) &ch, 1, 0xFFFF);
 
 	return ch;
-}
-
-
-
-void I2C1_EV_IRQHandler() {
-	HAL_I2C_EV_IRQHandler(&I2cHandle);
-}
-
-void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
-	HAL_I2C_Master_Receive_IT(&I2cHandle, (0b1001000<<1), &re_databuff, 1);
-}
-
-void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
-	printf("The current temperature is: %u\n", re_databuff);
 }
 
 /**

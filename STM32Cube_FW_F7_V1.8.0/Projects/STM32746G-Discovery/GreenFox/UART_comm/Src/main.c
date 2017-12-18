@@ -52,7 +52,6 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
-
 GPIO_InitTypeDef GPIOTxConfig;
 GPIO_InitTypeDef GPIORxConfig;
 
@@ -82,9 +81,9 @@ static void CPU_CACHE_Enable(void);
  */
 
 void init_usart(UART_HandleTypeDef *huart){
-	// init USART
+
 	__HAL_RCC_GPIOB_CLK_ENABLE();
-	 __HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_USART1_CLK_ENABLE();
 
   GPIOTxConfig.Pin = GPIO_PIN_9;
@@ -123,8 +122,6 @@ void write_input (char *line) {
 		HAL_UART_Transmit(&uart_handle, &line[i], 1, HAL_MAX_DELAY);
 		i++;
 	}
-
-
 }
 
 int main(void) {
@@ -139,7 +136,7 @@ int main(void) {
 
 	/* Enable the CPU Cache */
 	CPU_CACHE_Enable();
-	__HAL_RCC_GPIOA_CLK_ENABLE();
+/*	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOF_CLK_ENABLE();
 
 	GPIO_InitTypeDef led1;
@@ -156,7 +153,7 @@ int main(void) {
 	butt1.Speed = GPIO_SPEED_HIGH;
 
 	HAL_GPIO_Init(GPIOA, &led1);
-	HAL_GPIO_Init(GPIOA, &butt1);
+	HAL_GPIO_Init(GPIOA, &butt1); */
 
 
 	/* STM32F7xx HAL library initialization:
@@ -170,14 +167,15 @@ int main(void) {
 	/* Configure the System clock to have a frequency of 216 MHz */
 	SystemClock_Config();
 
-	BSP_PB_Init(BUTTON_WAKEUP, BUTTON_MODE_EXTI);
+	//BSP_PB_Init(BUTTON_WAKEUP, BUTTON_MODE_EXTI);
 
 	/* Add your application code here
 	 */
+	
+
+	//BSP_COM_Init(COM1, &uart_handle);
 	BSP_LED_Init(LED_GREEN);
-
-
-
+	
 	uart_handle.Init.BaudRate = 115200;
 	uart_handle.Init.WordLength = UART_WORDLENGTH_8B;
 	uart_handle.Init.StopBits = UART_STOPBITS_1;
@@ -185,18 +183,12 @@ int main(void) {
 	uart_handle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
 	uart_handle.Init.Mode = UART_MODE_TX_RX;
 
-	//BSP_COM_Init(COM1, &uart_handle);
-
 	init_usart(&uart_handle);
-
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC UART WS**********\r\n\n");
 
 	char input[100];
-
-
-
 
 	while (1) {
 		read_input(input);
@@ -204,15 +196,15 @@ int main(void) {
 			BSP_LED_On(LED_GREEN);
 		}else if (strcmp(input, "off\n") == 0) {
 			BSP_LED_Off(LED_GREEN);
-		} else {
+		}
+		/*else {
 			for (unsigned int j = 0; j < 6; j++) {
 				HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
 				HAL_Delay(100);
 			}
-
 		}
-
-		write_input(input);
+*/
+write_input(input);
 		input[0] = '\0';
 	}
 

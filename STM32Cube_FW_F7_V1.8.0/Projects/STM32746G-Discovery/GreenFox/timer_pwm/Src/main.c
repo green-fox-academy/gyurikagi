@@ -122,8 +122,9 @@ int main(void)
   TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
 
   HAL_TIM_Base_Init(&TimHandle);            //Configure the timer
-
   HAL_TIM_Base_Start(&TimHandle);
+  
+  
   __HAL_RCC_GPIOF_CLK_ENABLE();
 
   __HAL_RCC_GPIOA_CLK_ENABLE();             //Enable GPIOA clock

@@ -53,15 +53,7 @@
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
 
-
-GPIO_InitTypeDef GPIOTxConfig;
-I2C_HandleTypeDef I2cHandle;
-TIM_HandleTypeDef TimHandle;
-TIM_OC_InitTypeDef sConfig;
-
 volatile uint32_t timIntPeriod;
-volatile uint8_t tr_databuff = 0x0;
-volatile uint8_t re_databuff = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -85,35 +77,6 @@ static void CPU_CACHE_Enable(void);
  * @param  None
  * @retval None
  */
-
-
-void I2C_Init(){
-	__HAL_RCC_GPIOB_CLK_ENABLE();
-	__HAL_RCC_I2C1_CLK_ENABLE();
-
-
-	GPIOTxConfig.Pin = GPIO_PIN_9 |  GPIO_PIN_8;
-	GPIOTxConfig.Mode = GPIO_MODE_AF_OD;
-	GPIOTxConfig.Pull = GPIO_PULLUP;
-	GPIOTxConfig.Alternate = GPIO_AF4_I2C1;
-	GPIOTxConfig.Speed = GPIO_SPEED_FAST;
-
-	HAL_GPIO_Init(GPIOB, &GPIOTxConfig);
-
-	I2cHandle.Init.Timing = 0x40912732;
-	I2cHandle.Instance = I2C1;
-	I2cHandle.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-
-	HAL_I2C_Init(&I2cHandle);
-
-}
-
-
-
-
-
-
-
 int main(void) {
 	/* This project template calls firstly two functions in order to configure MPU feature
 	 and to enable the CPU Cache, respectively MPU_Config() and CPU_CACHE_Enable().
@@ -126,25 +89,6 @@ int main(void) {
 
 	/* Enable the CPU Cache */
 	CPU_CACHE_Enable();
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	__HAL_RCC_GPIOF_CLK_ENABLE();
-
-	GPIO_InitTypeDef led1;
-
-	led1.Pin = GPIO_PIN_8;
-	led1.Mode = GPIO_MODE_OUTPUT_PP;
-	led1.Pull = GPIO_PULLDOWN;
-	led1.Speed = GPIO_SPEED_HIGH;
-
-	GPIO_InitTypeDef butt1;
-	butt1.Pin = GPIO_PIN_0;
-	butt1.Mode = GPIO_MODE_INPUT;
-	butt1.Pull = GPIO_PULLUP;
-	butt1.Speed = GPIO_SPEED_HIGH;
-
-	HAL_GPIO_Init(GPIOA, &led1);
-	HAL_GPIO_Init(GPIOA, &butt1);
-
 
 	/* STM32F7xx HAL library initialization:
 	 - Configure the Flash ART accelerator on ITCM interface
@@ -173,27 +117,11 @@ int main(void) {
 	BSP_COM_Init(COM1, &uart_handle);
 
 
-	I2C_Init();
-
-	HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0x0F, 0x00);
-	HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
-
-
 	printf("\n-----------------WELCOME-----------------\r\n");
-	printf("**********in STATIC I2S WS**********\r\n\n");
+	printf("**********in STATIC interrupts WS**********\r\n\n");
 
-	uint8_t tr_databuff = 0x0;
-	uint8_t re_databuff = 0;
 
 	while (1) {
-
-		HAL_I2C_Master_Transmit_IT(&I2cHandle, 0b1001000<<1, &tr_databuff, 1);
-		HAL_Delay(1000);
-		/*HAL_I2C_Master_Transmit( &I2cHandle, 0b1001000<<1, &tr_databuff, 1, 0xFFFF);
-		HAL_I2C_Master_Receive( &I2cHandle, 0b1001000<<1, &re_databuff, 1, 0xFFFF);
-		printf("%i\n", re_databuff);
-		*/
-		//HAL_I2C_Master_Transmit_IT()
 	}
 }
 
@@ -208,20 +136,6 @@ PUTCHAR_PROTOTYPE {
 	HAL_UART_Transmit(&uart_handle, (uint8_t *) &ch, 1, 0xFFFF);
 
 	return ch;
-}
-
-
-
-void I2C1_EV_IRQHandler() {
-	HAL_I2C_EV_IRQHandler(&I2cHandle);
-}
-
-void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
-	HAL_I2C_Master_Receive_IT(&I2cHandle, (0b1001000<<1), &re_databuff, 1);
-}
-
-void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
-	printf("The current temperature is: %u\n", re_databuff);
 }
 
 /**
