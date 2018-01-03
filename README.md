@@ -1,4 +1,4 @@
-# gyurikagi
+# Agnes Gyurik
 
 Hello everyone! My name is Agnes Gyurik and this is my repo learning at Green Fox Academy. 
 
