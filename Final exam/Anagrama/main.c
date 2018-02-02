@@ -4,27 +4,23 @@
 
 void sort_expression (char str[]);
 void anagram_exam(char base[], char second[]);
-char* clean_char_array(char word[]);
+char clean_char_array(char word[]);
+
+
+
 int main()
 {
     char expression1[255];
     char expression2[255];
 
-    //cleaning expression1 array
+    //cleaning expressions
     clean_char_array(expression1);
     clean_char_array(expression2);
 
-   /*  for(int i = 0; i < 255; ++i){
-        expression1[i] = '\0';
-        } */
-
-    //cleaning expression2 array
-   /*  for(int i = 0; i < 255; ++i){
-        expression2[i] = '\0';
-        } */
     // Give me your first expression and press enter
     printf("\n Give me your first expression and press enter!\n");
     //Put this expression in an array name is expression1
+
     int index1 = 0;
 	char character1 = getchar();
 	while (character1 != '\n') {
@@ -44,11 +40,7 @@ int main()
 		index2++;
 		character2 = getchar();
 	}
-/*	expression2[index2] = 0;
-    //sort expression1
-    sort_expression (expression1);
-    //sort expression2
-    sort_expression (expression2); */
+
     //compare sorted expressions ( if statement - write the answer
     anagram_exam(expression1, expression2);
 
@@ -71,9 +63,9 @@ void sort_expression (char str[])
     }
 
 }
-// this function examine, that two sorted string is an anagramma or not
+// this function examine, that two string is an anagram or not
 void anagram_exam(char base[], char second[])
-{
+{   //first short expressions
     sort_expression (base);
     sort_expression(second);
     if (strcmp(base, second) == 0 ) {
@@ -83,10 +75,11 @@ void anagram_exam(char base[], char second[])
         }
 }
 
-char* clean_char_array(char word[])
+char clean_char_array(char word[])
 {
     for(int i = 0; i < sizeof(word); ++i){
         word[i] = '\0';
         }
     return word;
 }
+
