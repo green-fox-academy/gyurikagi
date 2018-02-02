@@ -3,6 +3,7 @@
 #include <string.h>
 
 void sort_expression (char str[]);
+void anagram_exam(char base[], char second[]);
 
 int main()
 {
@@ -46,11 +47,12 @@ int main()
     //sort expression2
     sort_expression (expression2);
     //compare sorted expressions ( if statement - write the answer
-    if (strcmp(expression1, expression2) == 0 ) {
+    anagram_exam(expression1, expression2);
+   /* if (strcmp(expression1, expression2) == 0 ) {
         printf("This is Anagrama");
         } else {
         printf("This is not Anagrama");
-        }
+        } */
 
     return 0;
 }
@@ -70,5 +72,14 @@ void sort_expression (char str[])
         }
     }
 
+}
+
+void anagram_exam(char base[], char second[])
+{
+    if (strcmp(base, second) == 0 ) {
+        printf("This is Anagrama");
+        } else {
+        printf("This is not Anagrama");
+        }
 }
 
