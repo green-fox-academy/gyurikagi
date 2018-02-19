@@ -38,6 +38,42 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include <string.h>
+#include "letters.h"
+
+
+typedef struct {
+	GPIO_TypeDef* port;
+	uint16_t pin;
+}t_pin;
+
+//define pins on board
+#define A1		 GPIOF, GPIO_PIN_10
+#define A2		 GPIOF, GPIO_PIN_9
+#define A3		 GPIOF, GPIO_PIN_8
+#define A4		 GPIOF, GPIO_PIN_7
+#define A5		 GPIOF, GPIO_PIN_6
+
+
+
+#define myPinC1	A1
+
+//define col pins
+#define c1		GPIO_PIN_10
+#define c2		GPIO_PIN_9
+#define c3		GPIO_PIN_8
+#define c4		GPIO_PIN_7
+#define c5		GPIO_PIN_6
+
+//define row pins
+#define r1 		GPIO_PIN_8
+#define r2 		GPIO_PIN_15
+#define r3 		GPIO_PIN_15
+#define r4		GPIO_PIN_2
+#define r5		GPIO_PIN_3
+#define r6		GPIO_PIN_6
+#define r7		GPIO_PIN_0
+
+
 
 
 
@@ -79,47 +115,8 @@ volatile uint32_t timIntPeriod;
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
 #endif /* __GNUC__ */
 
-typedef struct {
-	GPIO_TypeDef* port;
-	uint16_t pin;
-}t_pin;
 
-//define pins on board
-#define A1		 GPIOF, GPIO_PIN_10
-#define A2		 GPIOF, GPIO_PIN_9
-#define A3		 GPIOF, GPIO_PIN_8
-#define A4		 GPIOF, GPIO_PIN_7
-#define A5		 GPIOF, GPIO_PIN_6
-
-
-
-#define myPinC1	A1
-
-//define col pins
-#define c1		A1
-#define c2		GPIO_PIN_9
-#define c3		GPIO_PIN_8
-#define c4		GPIO_PIN_7
-#define c5		GPIO_PIN_6
-
-//define row pins
-#define r1 		GPIO_PIN_8
-#define r2 		GPIO_PIN_15
-#define r3 		GPIO_PIN_15
-#define r4		GPIO_PIN_2
-#define r5		GPIO_PIN_3
-#define r6		GPIO_PIN_6
-#define r7		GPIO_PIN_0
-
-
-
-static void SystemClock_Config(void);
-static void Error_Handler(void);
-static void MPU_Config(void);
-static void CPU_CACHE_Enable(void);
-
-/* Private functions ---------------------------------------------------------*/
-
+/*
 void init_colums(GPIO_TypeDef *_gpio, uint16_t _pin)
 {
 	__HAL_RCC_GPIOF_CLK_ENABLE();
@@ -130,7 +127,7 @@ void init_colums(GPIO_TypeDef *_gpio, uint16_t _pin)
 	C1.Speed = GPIO_SPEED_FAST;
 
 	HAL_GPIO_Init(_gpio, &_pin);
-}
+}*/
 
 void define_cols() {
 	__HAL_RCC_GPIOF_CLK_ENABLE();
@@ -271,6 +268,15 @@ void reset_all_rows()
 	HAL_GPIO_WritePin(GPIOI, r7, GPIO_PIN_RESET);
 }
 
+void r4_on()
+{
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, r3, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOI, r5, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOH, r6, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOI, r7, GPIO_PIN_SET);
+}
 void letter_K()
 {
 	// letter "K"
@@ -280,12 +286,7 @@ void letter_K()
 		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
 		// C2 r4 on, all others off
 		HAL_GPIO_WritePin(GPIOF, c2, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOA, r3, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOI, r5, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOH, r6, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOI, r7, GPIO_PIN_SET);
+		r4_on();
 		HAL_Delay(1);
 		//reset pins
 		HAL_GPIO_WritePin(GPIOF, c2, GPIO_PIN_RESET);
@@ -373,6 +374,55 @@ void letter_R()
 	HAL_GPIO_WritePin(GPIOF, c5, GPIO_PIN_RESET);
 	reset_all_rows();
 }
+
+
+void r1_3_on()
+{
+	HAL_GPIO_WritePin(GPIOI, r4, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOI, r5, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOH, r6, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOI, r7, GPIO_PIN_SET);
+}
+
+void r5_7_on()
+{
+	HAL_GPIO_WritePin(GPIOA, r1, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, r2, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, r3, GPIO_PIN_SET);
+}
+
+void letter_Y()
+{
+	HAL_GPIO_WritePin(GPIOF, c1, GPIO_PIN_SET);
+	r1_3_on();
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(GPIOF, c1, GPIO_PIN_RESET);
+	reset_all_rows();
+	HAL_GPIO_WritePin(GPIOF, c2, GPIO_PIN_SET);
+	r4_on();
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(GPIOF, c2, GPIO_PIN_RESET);
+	reset_all_rows();
+	//r5-7 on
+	HAL_GPIO_WritePin(GPIOF, c3, GPIO_PIN_SET);
+	r5_7_on();
+	//reset pins
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(GPIOF, c3, GPIO_PIN_RESET);
+	reset_all_rows();
+	HAL_GPIO_WritePin(GPIOF, c4, GPIO_PIN_SET);
+	r4_on();
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(GPIOF, c4, GPIO_PIN_RESET);
+	reset_all_rows();
+	HAL_GPIO_WritePin(GPIOF, c5, GPIO_PIN_SET);
+	r1_3_on();
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(GPIOF, c5, GPIO_PIN_RESET);
+	reset_all_rows();
+
+}
+
 /*
 #define text 1,0,0,0,1, 11110 00100 11110
 			 1,0,0,1,0, 10001 00100 10001
@@ -382,6 +432,20 @@ void letter_R()
 			 10010 10010 00100 10000
 			 10001 10001 00100 10000
 */
+
+
+
+
+
+
+
+static void SystemClock_Config(void);
+static void Error_Handler(void);
+static void MPU_Config(void);
+static void CPU_CACHE_Enable(void);
+
+/* Private functions ---------------------------------------------------------*/
+
 
 /**
  * @brief  Main program
@@ -411,7 +475,7 @@ int main(void) {
 
 	define_cols();
 	define_row();
-	init_colums(c1);
+	//init_colums(c1);
 
 
 	/* Configure the System clock to have a frequency of 216 MHz */
@@ -444,6 +508,20 @@ int main(void) {
 		for (int i = 0; i < 255; i++) {
 			letter_R();
 		}
+		for (int i = 0; i < 255; i++) {
+			letter_Y();
+		}
+
+
+
+
+
+
+
+
+
+
+
 
 
 	}
