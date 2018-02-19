@@ -78,20 +78,36 @@ volatile uint32_t timIntPeriod;
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
 #endif /* __GNUC__ */
 
+typedef struct {
+	GPIO_TypeDef* port;
+	uint16_t pin;
+}t_pin;
+
+//define pins on board
+#define A1		 GPIOF, GPIO_PIN_10
+#define A2		 GPIOF, GPIO_PIN_9
+#define A3		 GPIOF, GPIO_PIN_8
+#define A4		 GPIOF, GPIO_PIN_7
+#define A5		 GPIOF, GPIO_PIN_6
+
+
+
+#define myPinC1	A1
+
 //define col pins
-#define c1	GPIO_PIN_10
-#define c2	GPIO_PIN_9
-#define c3	GPIO_PIN_8
-#define c4	GPIO_PIN_7
-#define c5	GPIO_PIN_6
+#define c1		A1
+#define c2		GPIO_PIN_9
+#define c3		GPIO_PIN_8
+#define c4		GPIO_PIN_7
+#define c5		GPIO_PIN_6
 
 //define row pins
-#define r2 GPIO_PIN_15
-#define r3 GPIO_PIN_15
-#define r4 GPIO_PIN_2
-#define r5 GPIO_PIN_3
-#define r6 GPIO_PIN_6
-#define r7 GPIO_PIN_0
+#define r2 		GPIO_PIN_15
+#define r3 		GPIO_PIN_15
+#define r4		GPIO_PIN_2
+#define r5		GPIO_PIN_3
+#define r6		GPIO_PIN_6
+#define r7		GPIO_PIN_0
 
 
 
@@ -102,15 +118,27 @@ static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
 
-void define_cols() {
+void init_colums(GPIO_TypeDef *_gpio, uint16_t _pin)
+{
 	__HAL_RCC_GPIOF_CLK_ENABLE();
-
-	C1.Pin = GPIO_PIN_10;
+	GPIO_InitTypeDef C1;
+	C1.Pin = _pin;
 	C1.Mode = GPIO_MODE_OUTPUT_PP;
 	C1.Pull = GPIO_PULLDOWN;
 	C1.Speed = GPIO_SPEED_FAST;
 
-	HAL_GPIO_Init(GPIOF, &C1);
+	HAL_GPIO_Init(_gpio, &_pin);
+}
+
+void define_cols() {
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+/*
+	C1.Pin = c1;
+	C1.Mode = GPIO_MODE_OUTPUT_PP;
+	C1.Pull = GPIO_PULLDOWN;
+	C1.Speed = GPIO_SPEED_FAST;
+
+	HAL_GPIO_Init(GPIOF, &C1); */
 
 	C2.Pin = c2;
 	C2.Mode = GPIO_MODE_OUTPUT_PP;
@@ -199,38 +227,46 @@ void define_row(){
 
 }
 
-void blink_c1r1()
+void blink_c1()
 {
 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
 }
 
-void blink_c2r1()
+void blink_c2()
 {
 	HAL_GPIO_WritePin(GPIOF, c2, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
 }
 
-void blink_c3r1()
+void blink_c3()
 {
 	HAL_GPIO_WritePin(GPIOF, c3, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
 }
 
-void blink_c4r1()
+void blink_c4()
 {
 	HAL_GPIO_WritePin(GPIOF, c4, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
 }
 
-void blink_c5r1()
+void blink_c5()
 {
 	HAL_GPIO_WritePin(GPIOF, c5, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
-
 }
 
+/*
+#define text 1,0,0,0,1, 11110 00100 11110
+			 1,0,0,1,0, 10001 00100 10001
+			 10100 10001 00100 10001
+			 11000 11110 00100 11110
+			 10100 10100 00100 10000
+			 10010 10010 00100 10000
+			 10001 10001 00100 10000
+*/
 
 /**
  * @brief  Main program
@@ -260,6 +296,7 @@ int main(void) {
 
 	define_cols();
 	define_row();
+	init_colums(c1);
 
 
 
@@ -297,20 +334,39 @@ int main(void) {
 
 
 	while (1) {
-		//tree
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(GPIOI, r7, GPIO_PIN_SET);
+		// letter "K"
+
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+		HAL_Delay(1);
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOF, c2, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOI, r4, GPIO_PIN_RESET);
+		HAL_Delay(1);
+		HAL_GPIO_WritePin(GPIOF, c2, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
+
+
+
+
+/*
+		//HAL_GPIO_WritePin(GPOIF, c1, GPIO_PIN_SET);
+			//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOI, r7, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(GPIOF, c3, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(GPIOA, r3, GPIO_PIN_RESET);
-			HAL_Delay(5);
+			HAL_Delay(2000);
+		//	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+			//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(GPIOF, c3, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(GPIOF, c4, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(GPIOA, r3, GPIO_PIN_SET);
-			HAL_Delay(5);
-
-
-
+			HAL_Delay(2000);
+			HAL_GPIO_WritePin(GPIOF, c5, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOH, r6, GPIO_PIN_RESET);
+			HAL_Delay(2000);
+			HAL_GPIO_WritePin(GPIOH, r6, GPIO_PIN_SET);*/
 	}
 }
 
