@@ -189,18 +189,9 @@ int main(void) {
 		for (int i = 0; i < 255; i++) {
 			letter_Y();
 		}
-
-
-
-
-
-
-
-
-
-
-
-
+		for (int i = 0; i < 255; i++) {
+			letter_P();
+		}
 
 	}
 }
